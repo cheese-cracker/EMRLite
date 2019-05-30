@@ -1,0 +1,7 @@
+*.pyc
+__pycache__/
+*.sqlite3
+*.sql
+*.keyconfig
+keyconfig.py
+venv/
