@@ -2,5 +2,39 @@
 from __future__ import unicode_literals
 
 from django.db import models
+from django.contrib.auth.models import User
+from django.core.validators import MaxValueValidator
 
-# Create your models here.
+
+class Doctor(models.Model):
+    user = models.OneToOneField(
+        'auth.User', on_delete=models.SET_NULL, null=True)
+    name = models.CharField(max_length=64)
+    phone = models.BigIntegerField()
+    alt_phone = models.BigIntegerField()
+    email = models.EmailField(unique=True)
+
+
+class Patient(models.Model):
+    name = models.CharField(max_length=64)
+    sex = models.CharField(max_length=1)
+    phone = models.BigIntegerField()
+    email = models.EmailField(unique=True)
+
+
+class Bill(models.Model):
+    timestamp = models.DateTimeField(auto_now_add=True)
+    person = models.ForeignKey(
+        Patient, on_delete=models.CASCADE, related_name='bills')
+    comment = models.TextField()
+    # (total cost)
+
+
+class BillEntry(models.Model):
+    parent = models.ForeignKey(
+        Bill, on_delete=models.CASCADE, related_name='entries')
+    category = models.CharField(max_length=16, unique=True)
+    name = models.CharField(max_length=64, unique=True)
+    cost = models.PositiveIntegerField(
+        validators=[MaxValueValidator(500000)],
+        default=1000)
