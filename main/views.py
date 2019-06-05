@@ -1,9 +1,20 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
+# import requests
+import uuid
+import json
 from django.shortcuts import render
+from django.http import JsonResponse
+from django.contrib.auth import login, logout, authenticate
+from django.contrib.auth.decorators import login_required
 # from django.views.generic import ListView
-from .models import Patient
+from .models import Patient, Doctor
+
+
+def HomeView(req):
+    return render(req, 'main/index.html')
+
 
 '''
 Class is inherits from ListView
