@@ -33,4 +33,49 @@ def PatientList(req):
         'title': 'PatientList',
         'patientList': qset,
     }
-    return render(req,'main/table.html',context)
+    return render(req, 'main/table.html', context)
+
+
+def Login(req):
+    if req.method == 'POST':
+        try:
+            # Coz we use " for quotes
+            data = json.loads(
+                req.body.decode('utf-8').replace("''", '""')
+            )
+        except:
+            return JsonResponse(
+                {"message": "Incorrect Request Body", "status": 403}
+            )
+        try:
+            username = data['name']
+            password = data['password']
+        except KeyError as missing_data:
+            return JsonResponse(
+                {'message': 'Missing key - {0}'.format(missing_data),
+                 "status": 3}
+            )
+        doc = authenticate(username=username, password=password)
+        if doc is not None:
+            login(req, doc)
+            try:
+                doctor = Doctor.objects.get(user=doc)
+            except:
+                return JsonResponse(
+                    {'message': 'Profile for this user does not exist!',
+                     'status': 404}
+                )
+            unique_id = str(doctor.uuid)
+            print(unique_id)
+            return JsonResponse(
+                {"message": "Logged in Successfully!",
+                 "status": 1,
+                 "user_id": unique_id}
+            )
+        else:
+            return JsonResponse(
+                {'message': 'Invalid Login Credentials',
+                 "status": 0}
+            )
+    elif req.method == 'GET':
+        return render(req, 'main/login.html', {'title': 'Doctor Login'})
