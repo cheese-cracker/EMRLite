@@ -1,4 +1,5 @@
 *.pyc
+*.old
 __pycache__/
 *.sqlite3
 *.sql
