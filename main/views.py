@@ -4,7 +4,7 @@ from __future__ import unicode_literals
 # import requests
 import uuid
 import json
-from django.shortcuts import render
+from django.shortcuts import render, redirect, reverse
 from django.http import JsonResponse
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.decorators import login_required
@@ -70,11 +70,13 @@ def Login(req):
                 )
             unique_id = str(doctor.uuid)
             print(unique_id)
-            return JsonResponse(
-                {"message": "Logged in Successfully!",
-                 "status": 1,
-                 "user_id": unique_id}
-            )
+            # return render(req, 'main/table.html', context)
+            return redirect(reverse(PatientList))
+            # return JsonResponse(
+            #     {"message": "Logged in Successfully!",
+            #      "status": 1,
+            #      "user_id": unique_id}
+            # )
         else:
             return JsonResponse(
                 {'message': 'Invalid Login Credentials',
