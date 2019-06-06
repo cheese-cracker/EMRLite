@@ -1,71 +1,30 @@
-<html>
-
-<head>
-<style>
-    table#miyazaki { 
-    margin: 0 auto;
-    border-collapse: collapse;
-    font-family: Agenda-Light, sans-serif;
-    font-weight: 100; 
-    background: #333; color: #fff;
-    text-rendering: optimizeLegibility;
-    border-radius: 5px; 
-    }
-    table#miyazaki caption { 
-    font-size: 4rem; color: #444;
-    margin: 1rem;
-    }
-    table#miyazaki thead th { font-weight: 600; }
-    table#miyazaki thead th, table#miyazaki tbody td { 
-    padding: .8rem; font-size: 1.4rem;
-    }
-    table#miyazaki tbody td { 
-    padding: .8rem; font-size: 1.4rem;
-    color: #444; background: #eee; 
-    }
-    table#miyazaki tbody tr:not(:last-child) { 
-    border-top: 1px solid #ddd;
-    border-bottom: 1px solid #ddd;  
-    }
-
-    @media screen and (max-width: 600px) {
-    table#miyazaki caption { background-image: none; }
-    table#miyazaki thead { display: none; }
-    table#miyazaki tbody td { 
-    display: block; padding: .6rem; 
-    }
-    table#miyazaki tbody tr td:first-child { 
-    background: #666; color: #fff; 
-    }
-    table#miyazaki tbody td:before { 
-    content: attr(data-th); 
-    font-weight: bold;
-    display: inline-block;
-    width: 6rem;  
-    }
-    }
-</style>
-</head>
-
-<table id="miyazaki">
-    <caption>{{ title }}</caption>
-<thead>
-    <tr>
-        <th>name</th>
-        <th>sex</th>
-        <th>phone</th>
-        <th>email</th>
-<tbody>
-{% if patientList %}
-{% for patient in patientList %}
-    <tr>
-        <td>{{ patient.name }}
-        <td>{{ patient.sex }}
-        <td>{{ patient.phone }}
-        <td>{{ patient.email }}
-    <tr>
-{% endfor %}
-{% endif %}
-</table>
-
-</html>
+{% extends "main/userbase.html" %}
+{% block content %}
+<div class="col-12 tm-block-col">
+    <div class="tm-bg-primary-dark tm-block tm-block-taller tm-block-scroll">
+        <h2 class="tm-block-title">Patient List</h2>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">NAME</th>
+                    <th scope="col">SEX</th>
+                    <th scope="col">PHONE</th>
+                    <th scope="col">EMAIL</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% if patientList %}
+            {% for patient in patientList %}
+               <tr>
+                   <td><b>{{ patient.name }}
+                    <td>{{ patient.sex }}
+                    <td>{{ patient.phone }}
+                    <td>{{ patient.email }}
+               </tr>
+            {% endfor %}
+            {% endif %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

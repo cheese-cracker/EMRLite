@@ -12,6 +12,9 @@ from django.contrib.auth.decorators import login_required
 from .models import Patient, Doctor
 
 
+LOGIN_URL = '/main/login'
+
+
 def HomeView(req):
     return render(req, 'main/index.html')
 
@@ -27,11 +30,14 @@ which has
 #     queryset = Patient.objects.all()
 
 
+@login_required(login_url=LOGIN_URL)
 def PatientList(req):
     qset = Patient.objects.all()
     context = {
         'title': 'PatientList',
         'patientList': qset,
+        'user': req.user,
+        'power': 'Doctor',
     }
     return render(req, 'main/table.html', context)
 
@@ -84,3 +90,8 @@ def Login(req):
             )
     elif req.method == 'GET':
         return render(req, 'main/login.html', {'title': 'Doctor Login'})
+
+
+def LogoutReq(req):
+    logout(req)
+    return redirect(reverse(HomeView))
