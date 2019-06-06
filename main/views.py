@@ -38,18 +38,21 @@ def PatientList(req):
 
 def Login(req):
     if req.method == 'POST':
+        # print(req.body.decode('utf-8').replace("''", '""'))
         try:
             # Coz we use " for quotes
-            data = json.loads(
-                req.body.decode('utf-8').replace("''", '""')
-            )
+            # data = json.loads(req.body)
+            data = req.POST.copy()
+            print(data)
         except:
             return JsonResponse(
                 {"message": "Incorrect Request Body", "status": 403}
             )
         try:
-            username = data['name']
-            password = data['password']
+            # username = data['name']
+            # password = data['password']
+            username = data.get('username')
+            password = data.get('password')
         except KeyError as missing_data:
             return JsonResponse(
                 {'message': 'Missing key - {0}'.format(missing_data),
