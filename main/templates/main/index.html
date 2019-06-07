@@ -12,6 +12,7 @@
                     <div class="row mt-2">
                       <div class="col-12">
                         <form action="/main/add_item" method="post">
+                            {% csrf_token %}
                           <div class="form-group mt-3">
                             <label for="category">Category</label>
                             <select 
@@ -20,11 +21,11 @@
                                 id="category"
                                 required
                                 >
-                              <option selected value="0">Consultation</option>
-                              <option value="1">Medication</option>
-                              <option value="2">Lab Reports</option>
-                              <option value="3">Emergencies</option>
-                              <option value="4">Others</option>
+                              <option selected value="Consultation">Consultation</option>
+                              <option value="Medication">Medication</option>
+                              <option value="Lab Reports">Lab Reports</option>
+                              <option value="Emergencies">Emergencies</option>
+                              <option value="Others">Others</option>
                             </select>
                          </div>
  

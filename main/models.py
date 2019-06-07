@@ -33,8 +33,6 @@ class Bill(models.Model):
 
 
 class BillEntry(models.Model):
-    parent = models.ForeignKey(
-        Bill, on_delete=models.CASCADE, related_name='entries')
     category = models.CharField(max_length=32, unique=True)
     name = models.CharField(max_length=64, unique=True)
     cost = models.PositiveIntegerField(
