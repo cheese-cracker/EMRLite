@@ -1,15 +1,75 @@
 {% extends "main/base.html" %}
+{% block logged_status %}
+<a class="nav-link d-block" href="/main/login">
+    LOG IN TO USE
+{% endblock %}
 {% block content %}
 </nav>
 <div class="container">
         <!-- row -->
         <div class="row tm-content-row">
+
             <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6 tm-block-col">
                 <div class="tm-bg-primary-dark tm-block">
-                    <h2 class="tm-block-title">Latest Hits</h2>
-                    <canvas id="lineChart"></canvas>
+
+                    <h2 class="tm-block-title"> Add Entry</h2>
+                    <div class="row mt-2">
+                      <div class="col-12">
+                        <form action="/main/add_item" method="post">
+                            {% csrf_token %}
+                          <div class="form-group mt-3">
+                            <label for="category">Category</label>
+                            <select 
+                                name="category"
+                                class="browser-default custom-select"
+                                id="category"
+                                required
+                                >
+                              <option selected value="Consultation">Consultation</option>
+                              <option value="Medication">Medication</option>
+                              <option value="Lab Reports">Lab Reports</option>
+                              <option value="Emergencies">Emergencies</option>
+                              <option value="Others">Others</option>
+                            </select>
+                         </div>
+ 
+                          <div class="form-group">
+                            <label for="name">Name</label>
+                            <input
+                              name="name"
+                              type="text"
+                              class="form-control validate"
+                              id="name"
+                              value=""
+                              required
+                            />
+                          </div>
+                          <div class="form-group mt-3">
+                            <label for="cost">Cost</label>
+                            <input
+                              name="cost"
+                              type="text"
+                              class="form-control validate"
+                              id="cost"
+                              value=""
+                              required
+                            />
+                          </div>
+                          <div class="form-group mt-4">
+                            <button
+                              type="submit"
+                              class="btn btn-primary btn-block text-uppercase"
+                            >
+                              Add Entry
+                            </button>
+                          </div>
+                        </form>
+                      </div>
+                    </div>
                 </div>
             </div>
+
+
             <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6 tm-block-col">
                 <div class="tm-bg-primary-dark tm-block">
                     <h2 class="tm-block-title">Performance</h2>

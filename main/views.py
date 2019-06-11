@@ -9,7 +9,7 @@ from django.http import JsonResponse
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.decorators import login_required
 # from django.views.generic import ListView
-from .models import Patient, Doctor
+from .models import Patient, Doctor, BillEntry
 
 
 LOGIN_URL = '/main/login'
@@ -95,3 +95,59 @@ def Login(req):
 def LogoutReq(req):
     logout(req)
     return redirect(reverse(HomeView))
+
+
+def BillingView(req):
+    context = {
+        'title': 'Bill Addition',
+        'patientlist': Patient.objects.all(),
+    }
+    return render(req, 'main/bill.html', context)
+
+
+@login_required(login_url=LOGIN_URL)
+def AddItem(req):
+    if req.method == 'POST':
+        try:
+            data = req.POST.copy()
+            print(data)
+        except Exception:
+            return JsonResponse(
+                {"message": "Incorrect Request Body", "status": 403}
+            )
+        try:
+            name = data.get('name')
+            category = data.get('category')
+            cost = data.get('cost')
+        except KeyError as missing_data:
+            return JsonResponse(
+                {'message': 'Missing key - {0}'.format(missing_data),
+                 "status": 3}
+            )
+        try:
+            entry = BillEntry()
+        except Exception:
+            return JsonResponse(
+                {'message': 'Error in BillEnrty model creation', 'status': 500}
+            )
+        try:
+            entry.name = name
+            entry.category = category
+            entry.cost = cost
+        except Exception:
+            return JsonResponse(
+                {
+                    'message': 'Name is not unique or name, category or price cannot be set to BillEntry',
+                    'status': 3
+                }
+            )
+
+        entry.save()
+
+        return JsonResponse(
+            {"message": "Successfully added item", "status": 1}
+        )
+    else:
+        return JsonResponse(
+            {'message': 'Only POST requests are supported', 'status': 403}
+        )

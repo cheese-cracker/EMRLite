@@ -104,8 +104,9 @@
                 <button 
                   class="btn btn-info text-uppercase"
                     >
-                    <a class="nav-link d-block" href="/main/login">
-                        LOG IN TO USE
+                    {% block logged_status %}
+
+                    {% endblock %}
                 </button>
                 </a>
               </li>
@@ -130,9 +131,9 @@
         </p>
       </div>
     </footer>
-    <script src="js/jquery-3.3.1.min.js"></script>
+    <script src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
     <!-- https://jquery.com/download/ -->
-    <script src="js/bootstrap.min.js"></script>
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
     <!-- https://getbootstrap.com/ -->
   </body>
 </html>
