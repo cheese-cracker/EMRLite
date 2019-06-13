@@ -25,7 +25,7 @@ class Patient(models.Model):
 
 
 class BillEntry(models.Model):
-    category = models.CharField(max_length=32, unique=True)
+    category = models.CharField(max_length=32, unique=False)
     name = models.CharField(max_length=64, unique=True)
     cost = models.PositiveIntegerField(
         validators=[MaxValueValidator(500000)],
