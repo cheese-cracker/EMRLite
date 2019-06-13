@@ -10,6 +10,7 @@
         <div class="row tm-content-row">
 
             <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6 tm-block-col">
+
                 <div class="tm-bg-primary-dark tm-block">
 
                     <h2 class="tm-block-title"> Add Entry</h2>
@@ -17,6 +18,7 @@
                       <div class="col-12">
                         <form action="/main/add_item" method="post">
                             {% csrf_token %}
+                          <input type="hidden" name="_method" value="POST">
                           <div class="form-group mt-3">
                             <label for="category">Category</label>
                             <select 
@@ -67,24 +69,91 @@
                       </div>
                     </div>
                 </div>
+
+            </div>
+
+
+            <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6 tm-block-col">
+
+                <div class="tm-bg-primary-dark tm-block">
+                    <h2 class="tm-block-title"> Edit Item</h2>
+                    <div class="row mt-2">
+                      <div class="col-12">
+                        <form action="/main/add_item" method="post">
+                            {% csrf_token %}
+                          <input type="hidden" name="_method" value="PUT">
+                          <div class="form-group">
+                            <label for="idno">ID No.</label>
+                            <input
+                              name="idno"
+                              type="text"
+                              class="form-control validate"
+                              id="idno"
+                              value=""
+                              required
+                            />
+                          </div>
+                          <div class="form-group mt-3">
+                            <label for="cost">Cost</label>
+                            <input
+                              name="cost"
+                              type="text"
+                              class="form-control validate"
+                              id="cost"
+                              value=""
+                              required
+                            />
+                          </div>
+                          <div class="form-group mt-4">
+                            <button
+                              type="submit"
+                              class="btn btn-primary btn-block text-uppercase"
+                            >
+                              Change Entry
+                            </button>
+                          </div>
+                        </form>
+                      </div>
+                    </div>
+                </div>
+
             </div>
 
 
             <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6 tm-block-col">
                 <div class="tm-bg-primary-dark tm-block">
-                    <h2 class="tm-block-title">Performance</h2>
-                    <canvas id="barChart"></canvas>
+                    <h2 class="tm-block-title"> Delete Item</h2>
+                    <div class="row mt-2">
+                      <div class="col-12">
+                        <form action="/main/add_item" method="post">
+                            {% csrf_token %}
+                          <input type="hidden" name="_method" value="DELETE">
+                          <div class="form-group">
+                            <label for="idno">ID No.</label>
+                            <input
+                              name="idno"
+                              type="text"
+                              class="form-control validate"
+                              id="idno"
+                              value=""
+                              required
+                            />
+                          </div>
+                         <div class="form-group mt-4">
+                            <button
+                              type="submit"
+                              class="btn btn-primary btn-block text-uppercase"
+                            >
+                              Delete Entry
+                            </button>
+                          </div>
+                        </form>
+                      </div>
+                    </div>
                 </div>
             </div>
-            <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6 tm-block-col">
-                <div class="tm-bg-primary-dark tm-block tm-block-taller">
-                    <h2 class="tm-block-title">Storage Information</h2>
-                    <div id="pieChartContainer">
-                        <canvas id="pieChart" class="chartjs-render-monitor" width="200" height="200"></canvas>
-                    </div>                        
-                </div>
-            </div>
-            <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6 tm-block-col">
+
+                <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6 tm-block-col">
                 <div class="tm-bg-primary-dark tm-block tm-block-taller tm-block-overflow">
                     <h2 class="tm-block-title">Notification List</h2>
                     <div class="tm-notification-items">

@@ -2,8 +2,8 @@
 from __future__ import unicode_literals
 
 # import requests
-import uuid
-import json
+# import uuid
+# import json
 from django.shortcuts import render, redirect, reverse
 from django.http import JsonResponse
 from django.contrib.auth import login, logout, authenticate
@@ -100,9 +100,9 @@ def LogoutReq(req):
 def BillingView(req):
     context = {
         'title': 'Bill Addition',
-        'patientlist': Patient.objects.all(),
+        'item_list': BillEntry.objects.all(),
     }
-    return render(req, 'main/bill.html', context)
+    return render(req, 'main/cart.html', context)
 
 
 @login_required(login_url=LOGIN_URL)
@@ -115,39 +115,78 @@ def AddItem(req):
             return JsonResponse(
                 {"message": "Incorrect Request Body", "status": 403}
             )
-        try:
-            name = data.get('name')
-            category = data.get('category')
-            cost = data.get('cost')
-        except KeyError as missing_data:
+        reqtype = data.get('_method')
+        print(reqtype)
+        if reqtype == 'POST':
+            try:
+                name = data.get('name')
+                category = data.get('category')
+                cost = data.get('cost')
+            except KeyError as missing_data:
+                return JsonResponse(
+                    {'message': 'Missing key - {0}'.format(missing_data),
+                     "status": 3}
+                )
+            try:
+                entry = BillEntry()
+            except Exception:
+                return JsonResponse(
+                    {'message': 'Error in BillEntry model creation', 'status': 500}
+                )
+            try:
+                entry.name = name
+                entry.category = category
+                entry.cost = cost
+            except Exception:
+                return JsonResponse(
+                    {
+                        'message': 'name is not unique or name, category or price cannot be set to BillEntry',
+                        'status': 3
+                    }
+                )
+
+            entry.save()
             return JsonResponse(
-                {'message': 'Missing key - {0}'.format(missing_data),
-                 "status": 3}
-            )
-        try:
-            entry = BillEntry()
-        except Exception:
+                {"message": "Successfully added item", "status": 1})
+        if reqtype == 'DELETE':
+            try:
+                name = data.get('name')
+                idno = data.get('idno')
+            except KeyError as missing_data:
+                return JsonResponse(
+                    {'message': 'Missing key - {0}'.format(missing_data),
+                     "status": 3})
+            try:
+                entry = BillEntry.objects.get(id=idno)
+            except Exception:
+                return JsonResponse(
+                    {'message': 'Entry not found',
+                     "status": 404})
+            entry.delete()
+
             return JsonResponse(
-                {'message': 'Error in BillEnrty model creation', 'status': 500}
-            )
-        try:
-            entry.name = name
-            entry.category = category
+                    {'message': 'Successfully deleted item',
+                     'status': 1})
+        if reqtype == 'PUT':
+            try:
+                idno = data.get('idno')
+                cost = data.get('cost')
+            except KeyError as missing_data:
+                return JsonResponse(
+                    {'message': 'Missing key - {0}'.format(missing_data),
+                     "status": 3})
+            try:
+                entry = BillEntry.objects.get(id=idno)
+            except Exception:
+                return JsonResponse(
+                    {'message': 'Entry not found',
+                     "status": 404})
             entry.cost = cost
-        except Exception:
+            entry.save()
             return JsonResponse(
-                {
-                    'message': 'Name is not unique or name, category or price cannot be set to BillEntry',
-                    'status': 3
-                }
-            )
-
-        entry.save()
-
-        return JsonResponse(
-            {"message": "Successfully added item", "status": 1}
-        )
+                    {'message': 'Successfully changed cost of item',
+                     'status': 1})
     else:
         return JsonResponse(
-            {'message': 'Only POST requests are supported', 'status': 403}
-        )
+            {'message': 'Only POST, PUT and DELETE requests are supported',
+             'status': 403})
