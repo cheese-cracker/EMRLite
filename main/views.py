@@ -100,9 +100,9 @@ def LogoutReq(req):
 def BillingView(req):
     context = {
         'title': 'Bill Addition',
-        'patientlist': Patient.objects.all(),
+        'item_list': BillEntry.objects.all(),
     }
-    return render(req, 'main/bill.html', context)
+    return render(req, 'main/cart.html', context)
 
 
 @login_required(login_url=LOGIN_URL)

@@ -18,7 +18,7 @@
                       <div class="col-12">
                         <form action="/main/add_item" method="post">
                             {% csrf_token %}
-                          <input type="hidden" name="_method" value="PUT">
+                          <input type="hidden" name="_method" value="POST">
                           <div class="form-group mt-3">
                             <label for="category">Category</label>
                             <select 
@@ -151,7 +151,7 @@
                       </div>
                     </div>
                 </div>
-
+            </div>
 
                 <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6 tm-block-col">
                 <div class="tm-bg-primary-dark tm-block tm-block-taller tm-block-overflow">
