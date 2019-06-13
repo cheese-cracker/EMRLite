@@ -24,17 +24,18 @@ class Patient(models.Model):
     email = models.EmailField(unique=True, blank=True)
 
 
-class Bill(models.Model):
-    timestamp = models.DateTimeField(auto_now_add=True)
-    person = models.ForeignKey(
-        Patient, on_delete=models.CASCADE, related_name='bills')
-    comment = models.TextField(blank=True)
-    # (total cost)
-
-
 class BillEntry(models.Model):
     category = models.CharField(max_length=32, unique=True)
     name = models.CharField(max_length=64, unique=True)
     cost = models.PositiveIntegerField(
         validators=[MaxValueValidator(500000)],
         default=1000)
+
+
+class Bill(models.Model):
+    timestamp = models.DateTimeField(auto_now_add=True)
+    person = models.ForeignKey(
+        Patient, on_delete=models.CASCADE, related_name='billings')
+    items = models.ManyToManyField(
+        BillEntry, related_name='billings')
+    comment = models.TextField(blank=True)
