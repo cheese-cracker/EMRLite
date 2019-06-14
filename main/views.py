@@ -202,3 +202,11 @@ def BillList(req):
         'power': 'Doctor',
     }
     return render(req, 'main/billlist.html', context)
+
+
+def PatientSelectView(req):
+    context = {
+        'title': 'Patient Selector',
+        'queryset': Patient.objects.all(),
+    }
+    return render(req, 'main/patientselector.html', context)
