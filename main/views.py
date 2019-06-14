@@ -3,13 +3,13 @@ from __future__ import unicode_literals
 
 # import requests
 # import uuid
-# import json
+import json
 from django.shortcuts import render, redirect, reverse
 from django.http import JsonResponse
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.decorators import login_required
 # from django.views.generic import ListView
-from .models import Patient, Doctor, BillEntry
+from .models import Patient, Doctor, BillEntry, Bill
 
 
 LOGIN_URL = '/main/login'
@@ -190,3 +190,15 @@ def AddItem(req):
         return JsonResponse(
             {'message': 'Only POST, PUT and DELETE requests are supported',
              'status': 403})
+
+
+@login_required(login_url=LOGIN_URL)
+def BillList(req):
+    qset = Bill.objects.order_by('-id')[:100]
+    context = {
+        'title': 'Bill History',
+        'queryset': qset,
+        'user': req.user,
+        'power': 'Doctor',
+    }
+    return render(req, 'main/billlist.html', context)
