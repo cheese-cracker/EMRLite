@@ -86,11 +86,22 @@ def LogoutReq(req):
     return redirect(reverse(HomeView))
 
 
-def BillingView(req):
+def CartView(req):
+    patname = 'None'
     context = {
         'title': 'Bill Addition',
         'item_list': BillEntry.objects.all(),
+        'patient': patname,
     }
+    try:
+        # patid = req.POST['selected']
+        patid = req.COOKIES['PatientID']
+        patname = Patient.objects.get(id=patid).name
+    except Exception:
+        print('No PatientID Cookie Found')
+        # return JsonResponse({
+        #     "message": "Cookie 'PatientID' not found.",
+        #     "status": 493})
     return render(req, 'main/cart.html', context)
 
 

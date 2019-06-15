@@ -4,6 +4,7 @@ from .views import (
     Login,
     LogoutReq,
     AddItem,
+    CartView,
     BillList,
     PatientSelectView,
 )
@@ -14,6 +15,7 @@ urlpatterns = [
     url(r'^login/?', Login, name='login'),
     url(r'^logout/?', LogoutReq, name='logout'),
     url(r'^add_item/?', AddItem, name='add_item'),
+    url(r'^cart/?', CartView, name='cartview'),
     url(r'^billhistory/?', BillList, name='listofbills'),
     url(r'^patientselector/?', PatientSelectView, name='patientselect'),
 ]
