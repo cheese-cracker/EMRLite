@@ -209,4 +209,19 @@ def PatientSelectView(req):
         'title': 'Patient Selector',
         'queryset': Patient.objects.all(),
     }
-    return render(req, 'main/patientselector.html', context)
+    if req.method == 'GET':
+        return render(req, 'main/patientselector.html', context)
+    elif req.method == 'POST':
+        # res = render(req, 'main/patientselector.html', context)
+        try:
+            data = req.POST.copy()
+            print(data)
+            selected = int(data['selected'])
+        except Exception:
+            return JsonResponse(
+                {"message": "Incorrect Request Body or missing",
+                 "status": 403})
+        res = redirect(reverse(CartView))
+        if 'PatientID' not in req.COOKIES:
+            res.set_cookie('PatientID', selected)
+        return res
