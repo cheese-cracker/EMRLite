@@ -19,17 +19,6 @@ def HomeView(req):
     return render(req, 'main/index.html')
 
 
-'''
-Class is inherits from ListView
-which has
-- queryset for the items
-- as_view() (to represent as function view in urls.py)
-- template has to have same name
-'''
-# class PatientListView(ListView):
-#     queryset = Patient.objects.all()
-
-
 @login_required(login_url=LOGIN_URL)
 def PatientList(req):
     qset = Patient.objects.all()
