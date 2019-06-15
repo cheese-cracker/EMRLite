@@ -225,3 +225,17 @@ def PatientSelectView(req):
         if 'PatientID' not in req.COOKIES:
             res.set_cookie('PatientID', selected)
         return res
+
+
+# Only For Testing!
+def TestView(req):
+    data = req.POST.copy()
+    print(data)
+    selected = data.get('id[]')
+    # data = json.loads(req.POST)
+    # selected = data['selected']
+    print(selected)
+    return JsonResponse(
+        {'requested': data,
+         'technique': req.method}
+    )
