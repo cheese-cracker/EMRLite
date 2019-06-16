@@ -1,0 +1,47 @@
+{% extends "main/base.html" %}
+
+{% block logged_status %}
+<a class="nav-link d-block" href="/main/logout">
+LOGOUT
+{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+<div class="row tm-content-row">
+  <div class="col-12 tm-block-col">
+    <div class="tm-bg-primary-dark tm-block tm-block-h-auto">
+        <h2 class="tm-block-title">Final Bill - {{ bill.id }}</h2>
+        <h2 class="tm-block-title">Patient Name:  {{ patient.name }}</h2>
+        <h2 class="tm-block-title">Patient Phone:  {{ patient.phone }}</h2>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">ID</th>
+                    <th scope="col">CATEGORY</th>
+                    <th scope="col">NAME</th>
+                    <th scope="col">COST</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% if itemlist %}
+            {% for item in itemlist %}
+               <tr>
+                    <td>{{ item.id }}
+                    <td>{{ item.category }}
+                    <td>{{ item.name }}
+                    <td>{{ item.cost }}
+               </tr>
+            {% endfor %}
+            {% endif %}
+            </tbody>
+            <tfoot>
+                    <th>
+                    <th>
+                    <th>{{ totalcost }}
+            </tfoot>
+        </table>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
