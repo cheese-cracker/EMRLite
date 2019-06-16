@@ -120,9 +120,6 @@
     <div class="col-12 tm-block-col">
         <div class="tm-bg-primary-dark tm-block-tallest tm-block-scroll">
             <h2 class="tm-block-title">Bill Cart - {{ patient }}</h2>
-            <form id='formulator' method='post' action='/main/generatebill'>
-                {% csrf_token %}
-                
             <table id="items" class="display dataTable dt-checkboxes-select" cellspacing="0" width="100%">
               <thead>
                 <tr>
@@ -159,7 +156,10 @@
     </div>
     <div class="col-12">
         <div class="tm-bg-primary-dark tm-mt-small row">
+            <input type="hidden" id="csrftok" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
             <button
+              id="formulator"
+              onclick="requestator()"
               type="submit"
               class="btn btn-primary text-uppercase"
             >
@@ -167,7 +167,6 @@
             </button>
         </div>
     </div>
-    </form>
 
     <footer class="tm-footer row tm-mt-small">
       <div class="col-12 font-weight-light">
@@ -189,45 +188,62 @@
 
 <script>
 $(document).ready(function (){
-   var table = $('#items').DataTable({
-      'columnDefs': [
-         {
-            'targets': 0,
-            'checkboxes': {
-               'selectRow': true
-            }
-         }
-      ],
-      'select': {
-         'style': 'multi'
-      },
-      'stateSave':true,
-      'order': [[1, 'asc']]
-   });
 
+var table = $('#items').DataTable({
+  'columnDefs': [
+     {
+        'targets': 0,
+        'checkboxes': {
+           'selectRow': true
+        }
+     }
+  ],
+  'select': {
+     'style': 'multi'
+  },
+  'stateSave':true,
+  'order': [[1, 'asc']]
+});
+
+console.log('yay!');
+
+// Handle form submission event
+// var submitter = document.getElementById('formulator');
+requestator = function(event){
 
     var rows_selected = table.column(0).checkboxes.selected();
-   // Handle form submission event
-   $('#formulator').on('submit', function(e){
-      var form = this;
+    var token_csrf = document.getElementById('csrftok').value;
+    console.log(token_csrf);
 
-      var rows_selected = table.column(0).checkboxes.selected();
-
-      // Iterate over all selected checkboxes
-      $.each(rows_selected, function(index, rowId){
-         // Create a hidden element
-         $(form).append(
-             $('<input>')
-                .attr('type', 'hidden')
-                .attr('name', 'id[]')
-                .val(rowId)
-         );
-      })
-
+    var rows = [];
+    $.each(rows_selected, function(index, rowId){
+        rows.push(rowId);
+        console.log(rows);
     });
 
-   // Output form data to a console     
-      $('#example-console-rows').text(rows_selected.join(","));
+    fetch("/main/generatebill", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": token_csrf,
+        },
+        body: JSON.stringify({
+            "selected": rows,
+        }),
+    })
+        .then( (res) => res.json())
+        .then( (res) => JSON.stringify(res))
+        .then( (res) => {
+            console.log('Recieved\n');
+            console.log(res);
+            console.log(res['message']);
+        })
+        .then( (res) => {
+            window.location.pathname = '/main/billing';
+        })
+        .catch( (err) => console.log(err));
+}
+
 });
 </script>
   </body>
