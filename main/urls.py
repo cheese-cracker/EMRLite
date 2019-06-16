@@ -8,6 +8,7 @@ from .views import (
     TestView,
     BillList,
     PatientSelectView,
+    FinalBillView,
 )
 
 urlpatterns = [
@@ -20,4 +21,5 @@ urlpatterns = [
     url(r'^test/?', TestView, name='testing'),
     url(r'^billhistory/?', BillList, name='listofbills'),
     url(r'^patientselector/?', PatientSelectView, name='patientselect'),
+    url(r'^billing/?', FinalBillView, name='finalbill'),
 ]

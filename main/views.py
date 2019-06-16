@@ -86,6 +86,33 @@ def LogoutReq(req):
     return redirect(reverse(HomeView))
 
 
+@login_required(login_url=LOGIN_URL)
+def FinalBillView(req):
+    clearcook = 0
+    try:
+        billid = req.COOKIES['BillID']
+        print('Received BillID {}'.format(str(billid)))
+        clearcook = 1
+    except Exception:
+        print('Cookie Not Found')
+        return JsonResponse(
+           {"message": "Cookie 'PatientID' not found!", "status": 553}
+        )
+    lastbill = Bill.objects.get(id=billid)
+    context = {
+        'title': 'Bill View',
+        'bill': lastbill,
+        'itemlist': lastbill.items.all(),
+        'patient': lastbill.person,
+        'user': req.user,
+        'power': 'Doctor',
+    }
+    res = render(req, 'main/finalbill.html', context)
+    if clearcook:
+        res.delete_cookie('BillID')
+    return res
+
+
 def CartView(req):
     patname = 'None'
     context = {
