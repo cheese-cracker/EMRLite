@@ -136,7 +136,7 @@ def GenerateBill(req):
     if req.method == 'POST':
         clearcook = 0
         try:
-            # data = json.loads(req.body.decode('utf8').replace("'", '"'))
+            data = json.loads(req.body.decode('utf8').replace("'", '"'))
             # data = req.POST.copy()
             pass
         except Exception:
@@ -153,7 +153,7 @@ def GenerateBill(req):
             )
         try:
             # Collect IDs from Bill Items
-            idlist = [2, 4]
+            idlist = list(data['selected'])
         except KeyError as missing_data:
             return JsonResponse(
                 {'message': 'Missing key - {0}'.format(missing_data),
@@ -172,10 +172,10 @@ def GenerateBill(req):
 
         # Save Generated Bill Again
         customerbill.save()
-        # res = JsonResponse(
-        #     {"message": "Successfully Generated Bill",
-        #      "status": 1})
-        res = redirect(reverse(FinalBillView))
+        res = JsonResponse(
+            {"message": "Successfully Generated Bill",
+             "status": 1})
+        # res = redirect(reverse(FinalBillView))
         if clearcook:
             res.delete_cookie('PatientID')
             res.set_cookie('BillID', customerbill.id)
