@@ -172,8 +172,11 @@ def GenerateBill(req):
 
         # Save Generated Bill Again
         customerbill.save()
+        mssg = "Successfully Generated Bill for {0}-{1}".format(
+            patid,
+            patient.name)
         res = JsonResponse(
-            {"message": "Successfully Generated Bill",
+            {"message": mssg,
              "status": 1})
         # res = redirect(reverse(FinalBillView))
         if clearcook:
@@ -302,8 +305,7 @@ def PatientSelectView(req):
                 {"message": "Incorrect Request Body or missing",
                  "status": 403})
         res = redirect(reverse(CartView))
-        if 'PatientID' not in req.COOKIES:
-            res.set_cookie('PatientID', selected)
+        res.set_cookie('PatientID', selected)
         return res
 
 
