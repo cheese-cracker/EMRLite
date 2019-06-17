@@ -71,6 +71,15 @@ button:focus {
   height: 100%;
   max-height: 450px;
 }
+.tm-block-tallest {
+  padding: 40px;
+  -webkit-box-shadow: 1px 1px 5px 0 #455c71;
+  -moz-box-shadow: 1px 1px 5px 0 #455c71;
+  box-shadow: 1px 1px 5px 0 #455c71;
+  min-height: 350px;
+  height: 100%;
+  max-height: 720px;
+}
 .tm-block-avatar,
 .tm-block-settings {
   max-height: none;

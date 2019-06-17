@@ -1,0 +1,52 @@
+{% extends "main/base.html" %}
+
+{% block logged_status %}
+<a class="nav-link d-block" href="/main/logout">
+LOGOUT
+{% endblock %}
+
+{% block content %}
+
+<div class="col-12 tm-block-col">
+    <div class="tm-bg-primary-dark tm-block tm-block-taller tm-block-scroll">
+        <h2 class="tm-block-title">Bill History List</h2>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">BILL ID</th>
+                    <th scope="col">TIME</th>
+                    <th scope="col">PATIENT NAME</th>
+                    <th scope="col">COMPLETION</th>
+                    <th scope="col">Optional Item List</th>
+                    <th scope="col">COMMENT</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% if queryset %}
+            {% for bill in queryset %}
+               <tr>
+                    <td>{{ bill.id }}
+                    <td>{{ bill.timestamp }}
+                    <td>{{ bill.person.name }}
+                    {% if bill.completed %}
+                    <td>
+                        <div class="tm-status-circle moving">
+                        </div>Completed
+                    </td>
+                    {% else %}
+                    <td>
+                        <div class="tm-status-circle pending">
+                        </div>Pending
+                    </td>
+                    {% endif %}
+                    <td>
+                    <td>{{ bill.comment }}
+               </tr>
+            {% endfor %}
+            {% endif %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% endblock %}

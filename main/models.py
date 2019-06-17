@@ -38,4 +38,5 @@ class Bill(models.Model):
         Patient, on_delete=models.CASCADE, related_name='billings')
     items = models.ManyToManyField(
         BillEntry, related_name='billings')
+    completed = models.BooleanField(default=False)
     comment = models.TextField(blank=True)

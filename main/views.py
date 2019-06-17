@@ -3,13 +3,13 @@ from __future__ import unicode_literals
 
 # import requests
 # import uuid
-# import json
+import json
 from django.shortcuts import render, redirect, reverse
 from django.http import JsonResponse
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.decorators import login_required
 # from django.views.generic import ListView
-from .models import Patient, Doctor, BillEntry
+from .models import Patient, Doctor, BillEntry, Bill
 
 
 LOGIN_URL = '/main/login'
@@ -17,17 +17,6 @@ LOGIN_URL = '/main/login'
 
 def HomeView(req):
     return render(req, 'main/index.html')
-
-
-'''
-Class is inherits from ListView
-which has
-- queryset for the items
-- as_view() (to represent as function view in urls.py)
-- template has to have same name
-'''
-# class PatientListView(ListView):
-#     queryset = Patient.objects.all()
 
 
 @login_required(login_url=LOGIN_URL)
@@ -97,12 +86,106 @@ def LogoutReq(req):
     return redirect(reverse(HomeView))
 
 
-def BillingView(req):
+@login_required(login_url=LOGIN_URL)
+def FinalBillView(req):
+    clearcook = 0
+    try:
+        billid = req.COOKIES['BillID']
+        print('Received BillID {}'.format(str(billid)))
+        clearcook = 1
+    except Exception:
+        print('Cookie Not Found')
+        return JsonResponse(
+           {"message": "Cookie 'PatientID' not found!", "status": 553}
+        )
+    lastbill = Bill.objects.get(id=billid)
+    context = {
+        'title': 'Bill View',
+        'bill': lastbill,
+        'itemlist': lastbill.items.all(),
+        'patient': lastbill.person,
+        'user': req.user,
+        'power': 'Doctor',
+    }
+    res = render(req, 'main/finalbill.html', context)
+    if clearcook:
+        res.delete_cookie('BillID')
+    return res
+
+
+def CartView(req):
+    patname = 'None'
     context = {
         'title': 'Bill Addition',
         'item_list': BillEntry.objects.all(),
+        'patient': patname,
     }
+    try:
+        # patid = req.POST['selected']
+        patid = req.COOKIES['PatientID']
+        patname = Patient.objects.get(id=patid).name
+    except Exception:
+        print('No PatientID Cookie Found')
+        # return JsonResponse({
+        #     "message": "Cookie 'PatientID' not found.",
+        #     "status": 493})
     return render(req, 'main/cart.html', context)
+
+
+def GenerateBill(req):
+    if req.method == 'POST':
+        clearcook = 0
+        try:
+            data = json.loads(req.body.decode('utf8').replace("'", '"'))
+            # data = req.POST.copy()
+            pass
+        except Exception:
+            return JsonResponse(
+               {"message": "Incorrect Request Body", "status": 403}
+            )
+        try:
+            patid = req.COOKIES['PatientID']
+            print('Received PatientID {}'.format(str(patid)))
+            clearcook = 1
+        except Exception:
+            return JsonResponse(
+               {"message": "Cookie 'PatientID' not found!", "status": 553}
+            )
+        try:
+            # Collect IDs from Bill Items
+            idlist = list(data['selected'])
+        except KeyError as missing_data:
+            return JsonResponse(
+                {'message': 'Missing key - {0}'.format(missing_data),
+                 "status": 3})
+
+        # Create Bill and modify and save (to get id)
+        patient = Patient.objects.get(id=patid)
+        customerbill = Bill(person=patient)
+        customerbill.save()
+
+        # Add Items corresponding to each id selected
+        for idno in idlist:
+            itemtaken = BillEntry.objects.get(id=idno)
+            print(itemtaken.name)
+            customerbill.items.add(itemtaken)
+
+        # Save Generated Bill Again
+        customerbill.save()
+        mssg = "Successfully Generated Bill for {0}-{1}".format(
+            patid,
+            patient.name)
+        res = JsonResponse(
+            {"message": mssg,
+             "status": 1})
+        # res = redirect(reverse(FinalBillView))
+        if clearcook:
+            res.delete_cookie('PatientID')
+            res.set_cookie('BillID', customerbill.id)
+            print('Cookie Regenerated')
+        return res
+    elif req.method == 'GET':
+        return redirect(reverse(FinalBillView))
 
 
 @login_required(login_url=LOGIN_URL)
@@ -190,3 +273,51 @@ def AddItem(req):
         return JsonResponse(
             {'message': 'Only POST, PUT and DELETE requests are supported',
              'status': 403})
+
+
+@login_required(login_url=LOGIN_URL)
+def BillList(req):
+    qset = Bill.objects.order_by('-id')[:100]
+    context = {
+        'title': 'Bill History',
+        'queryset': qset,
+        'user': req.user,
+        'power': 'Doctor',
+    }
+    return render(req, 'main/billlist.html', context)
+
+
+def PatientSelectView(req):
+    context = {
+        'title': 'Patient Selector',
+        'queryset': Patient.objects.all(),
+    }
+    if req.method == 'GET':
+        return render(req, 'main/patientselector.html', context)
+    elif req.method == 'POST':
+        # res = render(req, 'main/patientselector.html', context)
+        try:
+            data = req.POST.copy()
+            print(data)
+            selected = int(data['selected'])
+        except Exception:
+            return JsonResponse(
+                {"message": "Incorrect Request Body or missing",
+                 "status": 403})
+        res = redirect(reverse(CartView))
+        res.set_cookie('PatientID', selected)
+        return res
+
+
+# Only For Testing!
+def TestView(req):
+    data = req.POST.copy()
+    print(data)
+    selected = data.get('id[]')
+    # data = json.loads(req.POST)
+    # selected = data['selected']
+    print(selected)
+    return JsonResponse(
+        {'requested': data,
+         'technique': req.method}
+    )
