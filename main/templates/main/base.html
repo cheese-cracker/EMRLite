@@ -104,9 +104,13 @@
                 <button
                   class="btn btn-info text-uppercase"
                     >
-                    {% block logged_status %}
-
-                    {% endblock %}
+                    {% if usr %}
+                        <a class="nav-link d-block" href="/main/logout">
+                        {{ usr }} - LOGOUT
+                    {% else %}
+                        <a class="nav-link d-block" href="/main/login">
+                        LOG IN TO USE
+                    {% endif %}
                 </button>
                 </a>
               </li>
@@ -125,9 +129,7 @@
     <footer class="tm-footer row tm-mt-small">
       <div class="col-12 font-weight-light">
         <p class="text-center text-white mb-0 px-4 small">
-          Copyright &copy; <b>2018</b> All rights reserved.
-
-          Design: <a rel="nofollow noopener" href="https://templatemo.com" class="tm-footer-link">Template Mo</a>
+            Billing Systems for Le' Nest Hospital!
         </p>
       </div>
     </footer>
