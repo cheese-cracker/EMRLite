@@ -16,7 +16,8 @@ LOGIN_URL = '/main/login'
 
 
 def HomeView(req):
-    return render(req, 'main/index.html')
+    return render(req, 'main/index.html',
+                  {'title': 'Inventory Item Modification'})
 
 
 @login_required(login_url=LOGIN_URL)
@@ -25,7 +26,7 @@ def PatientList(req):
     context = {
         'title': 'PatientList',
         'patientList': qset,
-        'user': req.user,
+        'usr': req.user,
         'power': 'Doctor',
     }
     return render(req, 'main/table.html', context)
@@ -104,7 +105,7 @@ def FinalBillView(req):
         'bill': lastbill,
         'itemlist': lastbill.items.all(),
         'patient': lastbill.person,
-        'user': req.user,
+        'usr': req.user,
         'power': 'Doctor',
     }
     res = render(req, 'main/finalbill.html', context)
@@ -281,7 +282,7 @@ def BillList(req):
     context = {
         'title': 'Bill History',
         'queryset': qset,
-        'user': req.user,
+        'usr': req.user,
         'power': 'Doctor',
     }
     return render(req, 'main/billlist.html', context)
