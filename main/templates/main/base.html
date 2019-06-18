@@ -2,6 +2,7 @@
 {% load static %}
 <html lang="en">
   <head>
+      
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
@@ -16,10 +17,11 @@
     <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
     <!-- https://getbootstrap.com/ -->
     <link rel="stylesheet" href="{% static 'css/templatemo-style.css' %}">
-    <!--
-	Product Admin CSS Template
-	https://templatemo.com/tm-524-product-admin
-	-->
+
+    {% if extras %}
+        {% block head %}
+        {% endblock %}
+    {% endif %}
   </head>
 
   <body>
@@ -137,5 +139,9 @@
     <!-- https://jquery.com/download/ -->
     <script src="{% static 'js/bootstrap.min.js' %}"></script>
     <!-- https://getbootstrap.com/ -->
+    {% if extras %}
+        {% block tail %}
+        {% endblock %}
+    {% endif %}
   </body>
 </html>

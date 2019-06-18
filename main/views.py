@@ -120,6 +120,7 @@ def CartView(req):
         'title': 'Bill Addition',
         'item_list': BillEntry.objects.all(),
         'patient': patname,
+        'extras': 1,
     }
     try:
         # patid = req.POST['selected']
@@ -292,6 +293,7 @@ def PatientSelectView(req):
     context = {
         'title': 'Patient Selector',
         'queryset': Patient.objects.all(),
+        'extras': 1,
     }
     if req.method == 'GET':
         return render(req, 'main/patientselector.html', context)
