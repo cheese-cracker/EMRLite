@@ -3,7 +3,7 @@ Lenest Hospital's Custom EMR and Health Management System.
 Custom tailored to meet the needs of multi specialty hospital lenest(Gynaecology,Obstretic,Pediatrics).
 
 ## Installation
- L
+
 Any Linux machine with python installed should be able to run this.
 
 ##### Steps for Installation-
@@ -16,7 +16,22 @@ This project is built on python3.
 
 Note: You may need to make a keyconfig file with the module-level variables and API keys for the settings.
 
-## Similar Projects
+## Features
 
-- [Revamp Lenest](https://github.com/suvigyavijay/revampLenest)
-- [Chatbot Lenest](https://github.com/Chinmay-pathak/Chatterbot)
+The EMRLite Project is a complete Billing and Health-Management System. The system allows you to manage your bill effectively on a server and generates the bill as per the items chosen.
+![Billing Cart for item selection](./screenshots/cart.png)
+
+### Key Features
+
+- Patient Management Portal - Patient List,
+- Billing Items and Cost Management - Overview of prices, modification of bill
+- Login Authentication for Users - Seperate users for staff members
+- Patient Selector - A complete Datatable with search functionality which allows you to select the patient.
+- Billing Cart - A complete Datatable which allows you to choose the items which are required for bill generation.
+
+
+## Projects for the Le' Nest Hospital
+
+Other projects for the Le' Nest Hospital include-
+- [suvigyavijay/revampLenest](https://github.com/suvigyavijay/revampLenest)
+- [Chinmay-pathak/Chatbot Lenest](https://github.com/Chinmay-pathak/Chatterbot)
