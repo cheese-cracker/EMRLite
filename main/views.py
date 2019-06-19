@@ -115,17 +115,17 @@ def FinalBillView(req):
 
 
 def CartView(req):
-    patname = 'None'
     context = {
         'title': 'Bill Addition',
         'item_list': BillEntry.objects.all(),
-        'patient': patname,
+        'patient': 'None',
         'extras': 1,
     }
     try:
         # patid = req.POST['selected']
         patid = req.COOKIES['PatientID']
         patname = Patient.objects.get(id=patid).name
+        context['patient'] = patname
     except Exception:
         print('No PatientID Cookie Found')
         # return JsonResponse({
