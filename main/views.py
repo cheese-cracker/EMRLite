@@ -154,6 +154,8 @@ def GenerateBill(req):
                {"message": "Cookie 'PatientID' not found!", "status": 553}
             )
         try:
+            # Collect Comment
+            cment = data['comment']
             # Collect IDs from Bill Items
             idlist = list(data['selected'])
         except KeyError as missing_data:
@@ -163,7 +165,7 @@ def GenerateBill(req):
 
         # Create Bill and modify and save (to get id)
         patient = Patient.objects.get(id=patid)
-        customerbill = Bill(person=patient)
+        customerbill = Bill(person=patient, comment=cment)
         customerbill.save()
 
         # Add Items corresponding to each id selected

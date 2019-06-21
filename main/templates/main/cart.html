@@ -50,6 +50,7 @@
 </div>
 <div class="col-12">
     <div class="tm-bg-primary-dark tm-mt-small row">
+        <input type="text" name="comment" id="comment"></input>
         <input type="hidden" id="csrftok" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
         <button
           id="formulator"
@@ -96,6 +97,7 @@ requestator = function(event){
 
     var rows_selected = table.column(0).checkboxes.selected();
     var token_csrf = document.getElementById('csrftok').value;
+    var comment = document.getElementById('comment').value;
     console.log(token_csrf);
 
     var rows = [];
@@ -112,6 +114,7 @@ requestator = function(event){
         },
         body: JSON.stringify({
             "selected": rows,
+            "comment": comment,
         }),
     })
         .then( (res) => res.json())
