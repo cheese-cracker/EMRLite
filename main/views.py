@@ -27,7 +27,8 @@ LOGIN_URL = '/main/login'
 
 
 def HomeView(req):
-    return render(req, 'main/index.html')
+    return render(req, 'main/index.html',
+                  {'title': 'Inventory Item Modification'})
 
 
 @login_required(login_url=LOGIN_URL)
@@ -36,7 +37,7 @@ def PatientList(req):
     context = {
         'title': 'PatientList',
         'patientList': qset,
-        'user': req.user,
+        'usr': req.user,
         'power': 'Doctor',
     }
     return render(req, 'main/table.html', context)
@@ -115,7 +116,7 @@ def FinalBillView(req):
         'bill': lastbill,
         'itemlist': lastbill.items.all(),
         'patient': lastbill.person,
-        'user': req.user,
+        'usr': req.user,
         'power': 'Doctor',
     }
 
@@ -135,16 +136,17 @@ def FinalBillView(req):
 
 
 def CartView(req):
-    patname = 'None'
     context = {
         'title': 'Bill Addition',
         'item_list': BillEntry.objects.all(),
-        'patient': patname,
+        'patient': 'None',
+        'extras': 1,
     }
     try:
         # patid = req.POST['selected']
         patid = req.COOKIES['PatientID']
         patname = Patient.objects.get(id=patid).name
+        context['patient'] = patname
     except Exception:
         print('No PatientID Cookie Found')
         # return JsonResponse({
@@ -302,7 +304,7 @@ def BillList(req):
     context = {
         'title': 'Bill History',
         'queryset': qset,
-        'user': req.user,
+        'usr': req.user,
         'power': 'Doctor',
     }
     return render(req, 'main/billlist.html', context)
@@ -312,6 +314,7 @@ def PatientSelectView(req):
     context = {
         'title': 'Patient Selector',
         'queryset': Patient.objects.all(),
+        'extras': 1,
     }
     if req.method == 'GET':
         return render(req, 'main/patientselector.html', context)

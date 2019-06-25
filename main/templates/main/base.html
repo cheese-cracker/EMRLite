@@ -2,6 +2,7 @@
 {% load static %}
 <html lang="en">
   <head>
+
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
@@ -16,17 +17,18 @@
     <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
     <!-- https://getbootstrap.com/ -->
     <link rel="stylesheet" href="{% static 'css/templatemo-style.css' %}">
-    <!--
-	Product Admin CSS Template
-	https://templatemo.com/tm-524-product-admin
-	-->
+
+    {% if extras %}
+        {% block head %}
+        {% endblock %}
+    {% endif %}
   </head>
 
   <body>
     <div>
       <nav class="navbar navbar-expand-xl">
         <div class="container h-100">
-          <a class="navbar-brand" href="index.html">
+          <a class="navbar-brand" href="\">
             <h1 class="tm-site-title mb-0">EMRLite System</h1>
           </a>
           <button
@@ -69,14 +71,14 @@
                 </div>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="products.html">
-                  <i class="fas fa-shopping-cart"></i> Products
+                <a class="nav-link" href="/main/patientlist">
+                  <i class="fas fa-shopping-cart"></i> Patient Lists
                 </a>
               </li>
 
               <li class="nav-item">
-                <a class="nav-link" href="accounts.html">
-                  <i class="far fa-user"></i> Accounts
+                <a class="nav-link" href="/main/billhistory">
+                  <i class="far fa-user"></i> Bill History
                 </a>
               </li>
               <li class="nav-item dropdown">
@@ -104,9 +106,13 @@
                 <button
                   class="btn btn-info text-uppercase"
                     >
-                    {% block logged_status %}
-
-                    {% endblock %}
+                    {% if usr %}
+                        <a class="nav-link d-block" href="/main/logout">
+                        {{ usr }} - LOGOUT
+                    {% else %}
+                        <a class="nav-link d-block" href="/main/login">
+                        LOG IN TO USE
+                    {% endif %}
                 </button>
                 </a>
               </li>
@@ -125,9 +131,7 @@
     <footer class="tm-footer row tm-mt-small">
       <div class="col-12 font-weight-light">
         <p class="text-center text-white mb-0 px-4 small">
-          Copyright &copy; <b>2018</b> All rights reserved.
-
-          Design: <a rel="nofollow noopener" href="https://templatemo.com" class="tm-footer-link">Template Mo</a>
+            Billing Systems for Le' Nest Hospital!
         </p>
       </div>
     </footer>
@@ -135,5 +139,9 @@
     <!-- https://jquery.com/download/ -->
     <script src="{% static 'js/bootstrap.min.js' %}"></script>
     <!-- https://getbootstrap.com/ -->
+    {% if extras %}
+        {% block tail %}
+        {% endblock %}
+    {% endif %}
   </body>
 </html>
