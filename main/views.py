@@ -28,7 +28,7 @@ LOGIN_URL = '/main/login'
 
 def HomeView(req):
     return render(req, 'main/index.html',
-                  {'title': 'Inventory Item Modification'})
+                  {'title': 'EMRLite System'})
 
 
 @login_required(login_url=LOGIN_URL)

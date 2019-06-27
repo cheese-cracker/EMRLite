@@ -243,6 +243,10 @@ img.stamp{
     }
 
 @media print {
+	.left_btn button.mah_btn {
+			 display :  none;
+	 }
+
 	.noprint { display: none !important; }
 	.input.clientDetails{
 	    border-bottom: none;
