@@ -119,20 +119,20 @@ def FinalBillView(req):
         'usr': req.user,
         'power': 'Doctor',
     }
-
-
-    template = get_template('main/bill3.html')
-    html = template.render(context)
-#    pdf = render_to_pdf('main/bill.html', context)
-#    return HttpResponse(pdf,content_type='pdf' )
-    return HttpResponse(html,req )
-
-
-
-#    res = render(req, 'main/finalbill.html', context)
-#    if clearcook:
-#        res.delete_cookie('BillID')
-#    return res
+    if req.method == 'GET':
+        res = render(req, 'main/finalbill.html', context)
+        return res
+    elif req.method == 'POST':
+        template = get_template('main/bill3.html')
+        html = template.render(context)
+        res = HttpResponse(html, req)
+        if clearcook:
+            res.delete_cookie('BillID')
+        return res
+    else:
+        return HttpResponse('<h1>Request Method Not Supported</h1>', req)
+    #    pdf = render_to_pdf('main/bill.html', context)
+    #    return httpresponse(pdf,content_type='pdf' )
 
 
 def CartView(req):

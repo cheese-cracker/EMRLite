@@ -6,6 +6,13 @@
   <div class="col-12 tm-block-col">
     <div class="tm-bg-primary-dark tm-block tm-block-h-auto">
         <h2 class="tm-block-title">Final Bill - {{ bill.id }}</h2>
+        {% if bill.completed %}
+            <div class="tm-status-circle moving">
+            </div>Completed
+        {% else %}
+            <div class="tm-status-circle pending">
+            </div>Pending
+        {% endif %}
         <h2 class="tm-block-title">Patient Name:  {{ patient.name }}</h2>
         <h2 class="tm-block-title">Patient Phone:  {{ patient.phone }}</h2>
         <table class="table">
@@ -38,5 +45,19 @@
     </div>
   </div>
 </div>
-
+<div class="col-12">
+    <div class="tm-bg-primary-dark tm-mt-small row">
+        <h2 class="tm-block-title">Comment: {{ bill.comment }}</h2>
+        <form action="/main/billing" method="POST">
+            {% csrf_token %}
+            <button
+              id="completion"
+              type="submit"
+              class="btn btn-primary text-uppercase"
+            >
+             Mark as Complete
+        </button>
+        </form>
+    </div>
+</div>
 {% endblock %}
