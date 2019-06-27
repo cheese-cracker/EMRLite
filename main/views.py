@@ -12,12 +12,23 @@ from django.contrib.auth.decorators import login_required
 from .models import Patient, Doctor, BillEntry, Bill
 
 
+
+from django.http import HttpResponse
+from django.views.generic import View
+import datetime
+from django.template.loader import get_template
+from Central.utils import render_to_pdf
+
+
+
+
+
 LOGIN_URL = '/main/login'
 
 
 def HomeView(req):
     return render(req, 'main/index.html',
-                  {'title': 'Inventory Item Modification'})
+                  {'title': 'EMRLite System'})
 
 
 @login_required(login_url=LOGIN_URL)
@@ -108,10 +119,20 @@ def FinalBillView(req):
         'usr': req.user,
         'power': 'Doctor',
     }
-    res = render(req, 'main/finalbill.html', context)
-    if clearcook:
-        res.delete_cookie('BillID')
-    return res
+
+
+    template = get_template('main/bill3.html')
+    html = template.render(context)
+#    pdf = render_to_pdf('main/bill.html', context)
+#    return HttpResponse(pdf,content_type='pdf' )
+    return HttpResponse(html,req )
+
+
+
+#    res = render(req, 'main/finalbill.html', context)
+#    if clearcook:
+#        res.delete_cookie('BillID')
+#    return res
 
 
 def CartView(req):

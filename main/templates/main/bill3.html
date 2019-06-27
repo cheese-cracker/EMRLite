@@ -1,0 +1,165 @@
+
+<body id="form">
+  {% load staticfiles %}
+  <link rel="stylesheet" href="{% static 'css/bill3.css' %}">
+  <script type="text/javascript" src="{% static 'js/bill3.js' %}"  ></script>
+  <meta charset="utf-8">
+
+  <form>
+    <header>
+      <span><img alt="" src="{% static 'img/Logo.jpg' %}"><input type="file" accept="image/*"></span>
+    </header>
+	<p class="text-center mah_in"></p>
+    <article class="invoicebody">
+      <p>Le’Nest, Laxmi Palace</p>
+      <p>Above Radha Krishna Hotel,<br>Opp. Sundar Nagar, S. V.Road.</p>
+      <p>Malad West, Mumbai – 400064<br></p>
+	    <div class="left_info">
+        <p><br>Name: {{ patient.name }}<br>Sex: {{patient.sex}}<br>Phone No: {{patient.phone}}</p>
+		</div>
+      <table class="meta" id="top_data_table">
+         <tbody>
+          <tr class="" id="invoice_number_row">
+            <th class="bold"><span class="invoice" id="invoice">Invoice&nbsp;#</span></th>
+            <td id="time"></td>
+          </tr>
+
+          <tr id="daterow">
+            <th class="bold"><span class="date" id="date">Date</span></th>
+            <td><span contenteditable=""><input type="date" id="theDate"></span></td>
+          </tr>
+
+          <tr class="" id="total_block">
+            <th class="bold"><span class="amount" id="amount">Ammout</span></th>
+            <td><span id="prefix">&#8377;</span><span></span></td>
+          </tr>
+
+        </tbody>
+      </table>
+	<div class="min_height">
+      <table class="inventory">
+        <thead>
+          <tr>
+            <th class="bold">
+              <span class="item" id="item">Item</span>
+            </th>
+            <th class="bold">
+              <span class="description" id="description">Description</span>
+            </th>
+            <th class="bold">
+              <span class="rate" id="rate">Rate</span>
+            </th>
+            <th class="bold">
+              <span class="quantity" id="quantity">Quantity</span>
+            </th>
+            <th class="bold">
+              <span class="price" id="price">Price</span>
+            </th>
+          </tr>
+        </thead>
+
+        <tbody>
+            {% if itemlist %}
+            {% for item in itemlist %}
+              <tr>
+                <td><a class="cut">-</a><span contenteditable>{{ item.category }}</span></td>
+                <td><span contenteditable>{{ item.name }}</span></td>
+                <td><span data-prefix>&#8377;</span><span>{{item.cost}}</span></td>
+                <td><span contenteditable>1</span></td>
+                <td><span data-prefix>&#8377;</span><span>0</span></td>
+
+            {% endfor %}
+            {% endif %}
+        </tbody>
+      </table>
+      <a class="add noprint" title="Add Item">+</a>
+      <div class="left_btn">
+      		<button class="mah_btn" onclick="myprint()">Print</button>
+      		<button class="mah_btn" onClick="window.location.reload()">Reset</button>
+      </div>
+      <div class="right_tax">
+      <table class="balance" id="balance">
+        <tbody>
+
+          <tr>
+            <th class="bold">
+              <span class="subtotal" id="subtotal">Subtotal</span>
+            </th>
+            <td>
+              <span>&#8377;</span><span>0.00</span>
+            </td>
+          </tr>
+
+          <tr>
+            <th class="bold">
+              <span class="tax" id="tax" contenteditable="">Include GST&nbsp;</span>
+              <span contenteditable="">12</span>%
+            </th>
+            <td>
+              <span>&#8377;</span><span>0.00</span>
+            </td>
+          </tr>
+
+          <tr>
+            <th class="bold">
+              <span class="total" id="total">Total</span>
+            </th>
+            <td>
+              <span>&#8377; </span><span>0.00</span>
+            </td>
+          </tr>
+
+        </tbody>
+      </table>
+      </div>
+	</div>
+    </article>
+  </form>
+
+<div class="Signature">
+	<ul>
+		<li>Client Signature</li>
+		<li>Owner Signature</li>
+	</ul>
+</div>
+
+
+<script>
+
+(function () {
+    function checkTime(i) {
+        return (i < 10) ? "0" + i : i;
+    }
+
+    function startTime() {
+        var times = new Date(),
+
+            hh = checkTime(times.getHours()),
+            mm = checkTime(times.getMinutes()),
+            ss = checkTime(times.getSeconds()),
+            yy = checkTime(times.getFullYear().toString(10).substring(2, 4)),
+            MM = checkTime(times.getMonth() + 1),
+            dd = checkTime(times.getDate())
+            ;
+        document.getElementById('time').innerHTML = yy + "" + MM + "" + dd + "" + hh + "" + mm + "" + ss ;
+        t = setTimeout(function () {
+            startTime1()
+        }, 500);
+    }
+    startTime();
+})();
+
+var date = new Date();
+
+var day = date.getDate();
+var month = date.getMonth() + 1;
+var year = date.getFullYear();
+
+if (month < 10) month = "0" + month;
+if (day < 10) day = "0" + day;
+
+var today = year + "-" + month + "-" + day;
+
+
+document.getElementById('theDate').value = today;
+</script>
