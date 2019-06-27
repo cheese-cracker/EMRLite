@@ -99,18 +99,12 @@ def LogoutReq(req):
 
 
 @login_required(login_url=LOGIN_URL)
-def FinalBillView(req):
-    clearcook = 0
+def FinalBillView(req, billid):
     try:
-        billid = req.COOKIES['BillID']
-        print('Received BillID {}'.format(str(billid)))
-        clearcook = 1
+        lastbill = Bill.objects.get(id=billid)
     except Exception:
-        print('Cookie Not Found')
-        return JsonResponse(
-           {"message": "Cookie 'PatientID' not found!", "status": 553}
-        )
-    lastbill = Bill.objects.get(id=billid)
+        err = '<h1> Error 404 Bill with id {} not found!</h1>'.format(billid)
+        return HttpResponse(err, req)
     context = {
         'title': 'Bill View',
         'bill': lastbill,
@@ -126,8 +120,8 @@ def FinalBillView(req):
         template = get_template('main/bill3.html')
         html = template.render(context)
         res = HttpResponse(html, req)
-        if clearcook:
-            res.delete_cookie('BillID')
+        lastbill.completed = 1
+        lastbill.save()
         return res
     else:
         return HttpResponse('<h1>Request Method Not Supported</h1>', req)
@@ -197,20 +191,20 @@ def GenerateBill(req):
 
         # Save Generated Bill Again
         customerbill.save()
-        mssg = "Successfully Generated Bill for {0}-{1}".format(
-            patid,
-            patient.name)
-        res = JsonResponse(
-            {"message": mssg,
-             "status": 1})
-        # res = redirect(reverse(FinalBillView))
+        # mssg = "Successfully Generated Bill for {0}-{1}".format(
+        #     patid,
+        #     patient.name)
+        # res = JsonResponse(
+        #     {"message": mssg,
+        #      "billid": customerbill.id,
+        #      "status": 1})
+        res = redirect('/main/bill/{}'.format(customerbill.id))
         if clearcook:
             res.delete_cookie('PatientID')
-            res.set_cookie('BillID', customerbill.id)
-            print('Cookie Regenerated')
         return res
     elif req.method == 'GET':
-        return redirect(reverse(FinalBillView))
+        print('Nothing here!')
+        return redirect(reverse(CartView))
 
 
 @login_required(login_url=LOGIN_URL)

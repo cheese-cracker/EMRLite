@@ -108,6 +108,7 @@ requestator = function(event){
 
     fetch("/main/generatebill", {
         method: "POST",
+        redirect: "follow",
         headers: {
             "Content-Type": "application/json",
             "X-CSRFToken": token_csrf,
@@ -117,15 +118,14 @@ requestator = function(event){
             "comment": comment,
         }),
     })
-        .then( (res) => res.json())
-        .then( (res) => JSON.stringify(res))
         .then( (res) => {
-            console.log('Recieved\n');
+            console.log('Received Successfully');
             console.log(res);
-            console.log(res['message']);
+            console.log(res['url']);
+            return res['url'];
         })
-        .then( (res) => {
-            window.location.pathname = '/main/billing';
+        .then((url) => {
+            window.location.href = url;
         })
         .catch( (err) => console.log(err));
 }
