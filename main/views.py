@@ -99,18 +99,12 @@ def LogoutReq(req):
 
 
 @login_required(login_url=LOGIN_URL)
-def FinalBillView(req):
-    clearcook = 0
+def FinalBillView(req, billid):
     try:
-        billid = req.COOKIES['BillID']
-        print('Received BillID {}'.format(str(billid)))
-        clearcook = 1
+        lastbill = Bill.objects.get(id=billid)
     except Exception:
-        print('Cookie Not Found')
-        return JsonResponse(
-           {"message": "Cookie 'PatientID' not found!", "status": 553}
-        )
-    lastbill = Bill.objects.get(id=billid)
+        err = '<h1> Error 404 Bill with id {} not found!</h1>'.format(billid)
+        return HttpResponse(err, req)
     context = {
         'title': 'Bill View',
         'bill': lastbill,
@@ -119,20 +113,20 @@ def FinalBillView(req):
         'usr': req.user,
         'power': 'Doctor',
     }
-
-
-    template = get_template('main/bill3.html')
-    html = template.render(context)
-#    pdf = render_to_pdf('main/bill.html', context)
-#    return HttpResponse(pdf,content_type='pdf' )
-    return HttpResponse(html,req )
-
-
-
-#    res = render(req, 'main/finalbill.html', context)
-#    if clearcook:
-#        res.delete_cookie('BillID')
-#    return res
+    if req.method == 'GET':
+        res = render(req, 'main/finalbill.html', context)
+        return res
+    elif req.method == 'POST':
+        template = get_template('main/bill3.html')
+        html = template.render(context)
+        res = HttpResponse(html, req)
+        lastbill.completed = 1
+        lastbill.save()
+        return res
+    else:
+        return HttpResponse('<h1>Request Method Not Supported</h1>', req)
+    #    pdf = render_to_pdf('main/bill.html', context)
+    #    return httpresponse(pdf,content_type='pdf' )
 
 
 def CartView(req):
@@ -175,6 +169,8 @@ def GenerateBill(req):
                {"message": "Cookie 'PatientID' not found!", "status": 553}
             )
         try:
+            # Collect Comment
+            cment = data['comment']
             # Collect IDs from Bill Items
             idlist = list(data['selected'])
         except KeyError as missing_data:
@@ -184,7 +180,7 @@ def GenerateBill(req):
 
         # Create Bill and modify and save (to get id)
         patient = Patient.objects.get(id=patid)
-        customerbill = Bill(person=patient)
+        customerbill = Bill(person=patient, comment=cment)
         customerbill.save()
 
         # Add Items corresponding to each id selected
@@ -195,20 +191,20 @@ def GenerateBill(req):
 
         # Save Generated Bill Again
         customerbill.save()
-        mssg = "Successfully Generated Bill for {0}-{1}".format(
-            patid,
-            patient.name)
-        res = JsonResponse(
-            {"message": mssg,
-             "status": 1})
-        # res = redirect(reverse(FinalBillView))
+        # mssg = "Successfully Generated Bill for {0}-{1}".format(
+        #     patid,
+        #     patient.name)
+        # res = JsonResponse(
+        #     {"message": mssg,
+        #      "billid": customerbill.id,
+        #      "status": 1})
+        res = redirect('/main/bill/{}'.format(customerbill.id))
         if clearcook:
             res.delete_cookie('PatientID')
-            res.set_cookie('BillID', customerbill.id)
-            print('Cookie Regenerated')
         return res
     elif req.method == 'GET':
-        return redirect(reverse(FinalBillView))
+        print('Nothing here!')
+        return redirect(reverse(CartView))
 
 
 @login_required(login_url=LOGIN_URL)

@@ -22,8 +22,9 @@ urlpatterns = [
     url(r'^add_patient/?', AddPatient, name='add_patient'),
     url(r'^cart/?', CartView, name='cartview'),
     url(r'^test/?', TestView, name='testing'),
+    url(r'^bill/(?P<billid>[0-9]+)/$', FinalBillView, name='finalbill'),
     url(r'^billhistory/?', BillList, name='listofbills'),
     url(r'^patientselector/?', PatientSelectView, name='patientselect'),
-    url(r'^billing/?', FinalBillView, name='finalbill'),
+    # url(r'^billing/?', FinalBillView, name='finalbill'),
     url(r'^generatebill/?', GenerateBill, name='generateBill'),
 ]
