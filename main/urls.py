@@ -10,6 +10,7 @@ from .views import (
     PatientSelectView,
     FinalBillView,
     GenerateBill,
+    AddPatient,
 )
 
 urlpatterns = [
@@ -18,6 +19,7 @@ urlpatterns = [
     url(r'^login/?', Login, name='login'),
     url(r'^logout/?', LogoutReq, name='logout'),
     url(r'^add_item/?', AddItem, name='add_item'),
+    url(r'^add_patient/?', AddPatient, name='add_patient'),
     url(r'^cart/?', CartView, name='cartview'),
     url(r'^test/?', TestView, name='testing'),
     url(r'^billhistory/?', BillList, name='listofbills'),

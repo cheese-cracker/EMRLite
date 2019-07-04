@@ -212,6 +212,96 @@ def GenerateBill(req):
 
 
 @login_required(login_url=LOGIN_URL)
+def AddPatient(req):
+    if req.method == 'POST':
+        try:
+            data = req.POST.copy()
+            print(data)
+        except Exception:
+            return JsonResponse(
+                {"message": "Incorrect Request Body", "status": 403}
+            )
+        reqtype = data.get('_method')
+        print(reqtype)
+        if reqtype == 'POST':
+            try:
+                name = data.get('name')
+                sex = data.get('sex')
+                phonenumber = data.get('phonenumber')
+                email=data.get('email')
+                # excelbackup(name,sex,phonenumber,email)
+            except KeyError as missing_data:
+                return JsonResponse(
+                    {'message': 'Missing key - {0}'.format(missing_data),
+                     "status": 3}
+                )
+            try:
+                entry = Patient()
+            except Exception:
+                return JsonResponse(
+                    {'message': 'Error in BillEntry model creation', 'status': 500}
+                )
+            try:
+                entry.name = name
+                entry.sex = sex
+                entry.phone = phonenumber
+                entry.email=email
+            except Exception:
+                return JsonResponse(
+                    {
+                        'message': 'name is not unique or name, category or price cannot be set to BillEntry',
+                        'status': 3
+                    }
+                )
+
+            entry.save()
+            return JsonResponse(
+                {"message": "Successfully added item", "status": 1})
+        if reqtype == 'DELETE':
+            try:
+                idno = data.get('idno')
+            except KeyError as missing_data:
+                return JsonResponse(
+                    {'message': 'Missing key - {0}'.format(missing_data),
+                     "status": 3})
+            try:
+                entry = Patient.objects.get(id=idno)
+            except Exception:
+                return JsonResponse(
+                    {'message': 'Entry not found',
+                     "status": 404})
+            entry.delete()
+
+            return JsonResponse(
+                    {'message': 'Successfully deleted item',
+                     'status': 1})
+        if reqtype == 'PUT':
+            try:
+                idno = data.get('idno')
+                cost = data.get('cost')
+            except KeyError as missing_data:
+                return JsonResponse(
+                    {'message': 'Missing key - {0}'.format(missing_data),
+                     "status": 3})
+            try:
+                entry = BillEntry.objects.get(id=idno)
+            except Exception:
+                return JsonResponse(
+                    {'message': 'Entry not found',
+                     "status": 404})
+            entry.cost = cost
+            entry.save()
+            return JsonResponse(
+                    {'message': 'Successfully changed cost of item',
+                     'status': 1})
+    else:
+        return JsonResponse(
+            {'message': 'Only POST, PUT and DELETE requests are supported',
+             'status': 403})
+
+
+
+
 def AddItem(req):
     if req.method == 'POST':
         try:
@@ -252,8 +342,8 @@ def AddItem(req):
                 )
 
             entry.save()
-            return JsonResponse(
-                {"message": "Successfully added item", "status": 1})
+
+            return JsonResponse({"message": "Successfully added item", "status": 1})
         if reqtype == 'DELETE':
             try:
                 name = data.get('name')
@@ -296,6 +386,13 @@ def AddItem(req):
         return JsonResponse(
             {'message': 'Only POST, PUT and DELETE requests are supported',
              'status': 403})
+
+
+
+
+
+
+
 
 
 @login_required(login_url=LOGIN_URL)

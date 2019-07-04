@@ -1,32 +1,158 @@
 {% extends "main/base.html" %}
 
 {% block content %}
-<div class="col-12 tm-block-col">
-    <div class="tm-bg-primary-dark tm-block tm-block-taller tm-block-scroll">
-        <h2 class="tm-block-title">Patient List</h2>
-        <table class="table">
-            <thead>
-                <tr>
-                    <th scope="col">NAME</th>
-                    <th scope="col">SEX</th>
-                    <th scope="col">PHONE</th>
-                    <th scope="col">EMAIL</th>
-                </tr>
-            </thead>
-            <tbody>
-            {% if patientList %}
-            {% for patient in patientList %}
-               <tr>
-                   <td><b>{{ patient.name }}
-                    <td>{{ patient.sex }}
-                    <td>{{ patient.phone }}
-                    <td>{{ patient.email }}
-               </tr>
-            {% endfor %}
-            {% endif %}
-            </tbody>
-        </table>
-    </div>
-</div>
+<div class="container">
+        <!-- row -->
+        <div class="row tm-content-row">
 
+          <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6 tm-block-col">
+
+              <div class="tm-bg-primary-dark tm-block-tallest">
+
+                  <h2 class="tm-block-title"> Add Patient</h2>
+                  <div class="row mt-2">
+                    <div class="col-12">
+                      <form action="/main/add_patient" method="post">
+                          {% csrf_token %}
+                        <input type="hidden" name="_method" value="POST">
+
+                        <div class="form-group">
+                          <label for="name">Name</label>
+                          <input
+                            name="name"
+                            type="text"
+                            class="form-control validate"
+                            id="name"
+                            value=""
+                            required
+                          />
+                        </div>
+
+
+
+                        <div class="form-group mt-3">
+                          <label for="Sex">Sex</label>
+                          <select
+                              name="sex"
+                              class="browser-default custom-select"
+                              id="sex"
+                              required
+                              >
+                            <option selected value="Female">F</option>
+                            <option value="Male">M</option>
+                          </select>
+                       </div>
+
+
+                        <div class="form-group mt-3">
+                          <label for="cost">Phone Number</label>
+                          <input
+                            name="phonenumber"
+                            type="text"
+                            class="form-control validate"
+                            id="phonenumber"
+                            value=""
+                            required
+                          />
+                        </div>
+
+                        <div class="form-group mt-3">
+                          <label for="email">Email ID</label>
+                          <input
+                            name="email"
+                            type="text"
+                            class="form-control validate"
+                            id="email"
+                          />
+                        </div>
+
+
+
+
+
+                        <div class="form-group mt-4">
+                          <button
+                            type="submit"
+                            class="btn btn-primary btn-block text-uppercase"
+                          >
+                            Add Entry
+                          </button>
+                        </div>
+                      </form>
+                    </div>
+                  </div>
+              </div>
+
+          </div>
+
+          <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6 tm-block-col">
+
+              <div class="tm-bg-primary-dark tm-block">
+
+                  <h2 class="tm-block-title"> Remove Patient</h2>
+                  <div class="row mt-2">
+                    <div class="col-12">
+                      <form action="/main/add_patient" method="post">
+                          {% csrf_token %}
+                        <input type="hidden" name="_method" value="DELETE">
+                        <div class="form-group">
+                          <label for="idno">ID No.</label>
+                          <input
+                            name="idno"
+                            type="text"
+                            class="form-control validate"
+                            id="idno"
+                            value=""
+                            required
+                          />
+                        </div>
+
+
+                        <div class="form-group mt-4">
+                          <button
+                            type="submit"
+                            class="btn btn-primary btn-block text-uppercase"
+                          >
+                            Remove Entry
+                          </button>
+                        </div>
+                      </form>
+                    </div>
+                  </div>
+              </div>
+
+          </div>
+
+
+          <div class="col-12 tm-block-col">
+              <div class="tm-bg-primary-dark tm-block tm-block-taller tm-block-scroll">
+                  <h2 class="tm-block-title">Patient List</h2>
+                  <table class="table">
+                      <thead>
+                          <tr>
+                              <th scope="col">ID</th>
+                              <th scope="col">NAME</th>
+                              <th scope="col">SEX</th>
+                              <th scope="col">PHONE</th>
+                              <th scope="col">EMAIL</th>
+                          </tr>
+                      </thead>
+                      <tbody>
+                      {% if patientList %}
+                      {% for patient in patientList %}
+                         <tr>
+                             <td><b>{{ patient.id }}
+                              <td>{{ patient.name }}
+                              <td>{{ patient.sex }}
+                              <td>{{ patient.phone }}
+                              <td>{{ patient.email }}
+                         </tr>
+                      {% endfor %}
+                      {% endif %}
+                      </tbody>
+                  </table>
+              </div>
+          </div>
+      </div>
+    </div>
 {% endblock %}
