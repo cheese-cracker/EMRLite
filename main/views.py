@@ -251,8 +251,7 @@ def AddPatient(req):
                 )
 
             entry.save()
-            return JsonResponse(
-                {"message": "Successfully added item", "status": 1})
+            return redirect('/main/patientlist')
         if reqtype == 'DELETE':
             try:
                 idno = data.get('idno')
@@ -268,9 +267,7 @@ def AddPatient(req):
                      "status": 404})
             entry.delete()
 
-            return JsonResponse(
-                    {'message': 'Successfully deleted item',
-                     'status': 1})
+            return redirect('/main/patientlist')
         if reqtype == 'PUT':
             try:
                 idno = data.get('idno')
@@ -339,7 +336,7 @@ def AddItem(req):
 
             entry.save()
 
-            return JsonResponse({"message": "Successfully added item", "status": 1})
+            return redirect('/')
         if reqtype == 'DELETE':
             try:
                 name = data.get('name')
@@ -356,9 +353,7 @@ def AddItem(req):
                      "status": 404})
             entry.delete()
 
-            return JsonResponse(
-                    {'message': 'Successfully deleted item',
-                     'status': 1})
+            return redirect('/')
         if reqtype == 'PUT':
             try:
                 idno = data.get('idno')
@@ -375,9 +370,7 @@ def AddItem(req):
                      "status": 404})
             entry.cost = cost
             entry.save()
-            return JsonResponse(
-                    {'message': 'Successfully changed cost of item',
-                     'status': 1})
+            return redirect('/')
     else:
         return JsonResponse(
             {'message': 'Only POST, PUT and DELETE requests are supported',
