@@ -23,6 +23,16 @@ class Patient(models.Model):
     phone = models.BigIntegerField()
     email = models.EmailField(unique=True, blank=True)
 
+
+class Appointment(models.Model):
+    patient = models.ForeignKey(
+        Patient, on_delete=models.SET_NULL, null=True, related_name='appointments')
+    time = models.DateTimeField(null=True, blank=True)
+    last_modified = models.DateTimeField(auto_now=True)
+    doc = models.ForeignKey(
+        Doctor, on_delete=models.SET_NULL, null=True, related_name='appointments')
+
+
 class BillEntry(models.Model):
     category = models.CharField(max_length=32, unique=False)
     name = models.CharField(max_length=64, unique=True)
