@@ -24,18 +24,18 @@ def add_data(data1, data2,data3,data4):
 
 def populate():
 
-    data= pd.read_excel('entryigen.xlsx', index_col=None)
-    data.to_csv('entryigen.csv', encoding='utf-8',index=False)
+    data= pd.read_excel('PatientsData.xlsx', index_col=None)
+    data.to_csv('PatientsData.csv', encoding='utf-8',index=False)
 
-    with open('entryigen.csv','r') as csvfile:
+    with open('PatientsData.csv','r') as csvfile:
              csv_reader = csv.reader(csvfile, delimiter=',')
              next(csv_reader)
              for line in csv_reader:
-                 category=line[0]
-                 name=line[1]
-                 sex=line[2]
-                 phone =line[3]
-                 email=line[4]
+
+                 name=line[0]
+                 sex=line[1]
+                 phone =line[2]
+                 email=line[3]
                  add_data(name,sex,phone,email)
 
 

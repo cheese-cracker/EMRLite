@@ -34,6 +34,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'main',
     'Formapp',
+    'import_export'
 #    'Appointments'
 ]
 
@@ -122,5 +123,3 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
 
 ALLOWED_HOSTS = ['*']
-
-

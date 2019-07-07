@@ -135,21 +135,27 @@ for (var a = document.querySelectorAll('table.inventory tbody tr'), i = 0; a[i];
 // ====================
 
 // get label cells
-label_cells = document.querySelectorAll('table.balance th span:last-child');
-tax_rate = label_cells[1].innerHTML/100;
+// label_cells = document.querySelectorAll('table.balance th span:last-child');
+// tax_rate = label_cells[1].innerHTML/100;
 
 // get balance cells
 cells = document.querySelectorAll('table.balance td:last-child span:last-child');
 
 // set total
-cells[0].innerHTML = total;
+cells[0].innerHTML = document.querySelector('table.meta tr:last-child td:last-child span:last-child').innerHTML = parsePrice(total);
 
 // set tax
-cells[1].innerHTML = parsePrice(total * tax_rate);
+// cells[1].innerHTML = parsePrice(total * tax_rate);
+//
+// // set balance and meta balance
+ //x = document.querySelector('table.meta tr:last-child td:last-child span:last-child').innerHTML = parsePrice(total + parseFloatHTML(cells[1]));
+//
+// cells[2].innerHTML = x
 
-// set balance and meta balance
-cells[2].innerHTML = document.querySelector('table.meta tr:last-child td:last-child span:last-child').innerHTML = parsePrice(total + parseFloatHTML(cells[1]));
+cells = document.querySelectorAll('table.receipt td:last-child span:last-child');
 
+cells[0].innerHTML = convertNumberToWords(total);
+//cells[0].innerHTML =200;
 // update prefix formatting
 // ========================
 

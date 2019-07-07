@@ -15,13 +15,19 @@ class Doctor(models.Model):
     phone = models.BigIntegerField()
     alt_phone = models.BigIntegerField(blank=True)
     email = models.EmailField(unique=True)
+    def __str__(self):
+        return self.name
+
 
 
 class Patient(models.Model):
     name = models.CharField(max_length=64)
     sex = models.CharField(max_length=1)
     phone = models.BigIntegerField()
-    email = models.EmailField(unique=True, blank=True)
+    email = models.EmailField(blank=True)
+    def __str__(self):
+        return self.name
+
 
 
 class Appointment(models.Model):
@@ -39,6 +45,9 @@ class BillEntry(models.Model):
     cost = models.PositiveIntegerField(
         validators=[MaxValueValidator(500000)],
         default=1000)
+    def __str__(self):
+        return self.name
+
 
 
 class Bill(models.Model):
@@ -49,3 +58,5 @@ class Bill(models.Model):
         BillEntry, related_name='billings')
     completed = models.BooleanField(default=False)
     comment = models.TextField(blank=True)
+    def __str__(self):
+        return self.name

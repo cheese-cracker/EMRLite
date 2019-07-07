@@ -49,6 +49,7 @@
                   <th>Name</th>
                   <th>Sex</th>
                   <th>Phone</th>
+                  <th>DOB</th>
                 </tr>
               </thead>
               <tbody>
@@ -60,6 +61,7 @@
                   <td>{{ patient.name }}</td>
                   <td>{{ patient.sex }}</td>
                   <td>{{ patient.phone }}</td>
+                  <td>{{ patient.dob}}</td>
                 </tr>
                 {% endfor %}
                 {% endif %}
@@ -133,7 +135,7 @@ $(document).ready(function (){
 
     });
 
-   // Output form data to a console     
+   // Output form data to a console
       $('#example-console-rows').text(rows_selected.join(","));
 });
 </script>
