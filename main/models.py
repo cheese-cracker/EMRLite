@@ -24,7 +24,7 @@ class Patient(models.Model):
     name = models.CharField(max_length=64)
     sex = models.CharField(max_length=1)
     phone = models.BigIntegerField()
-    email = models.EmailField(unique=True, blank=True)
+    email = models.EmailField(blank=True)
     def __str__(self):
         return self.name
 
