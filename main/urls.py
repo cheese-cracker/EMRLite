@@ -28,5 +28,5 @@ urlpatterns = [
     url(r'^appointments/?', AppointListView, name='listofappointments'),
     url(r'^patientselector/?', PatientSelectView, name='patientselect'),
     # url(r'^billing/?', FinalBillView, name='finalbill'),
-    url(r'^generatebill/?', GenerateBill, name='generateBill'),
+    url(r'^generatebill/(?P<appointid>[0-9]+)/$', GenerateBill, name='maker'),
 ]

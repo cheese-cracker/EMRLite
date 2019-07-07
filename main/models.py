@@ -15,9 +15,9 @@ class Doctor(models.Model):
     phone = models.BigIntegerField()
     alt_phone = models.BigIntegerField(blank=True)
     email = models.EmailField(unique=True)
+
     def __str__(self):
         return self.name
-
 
 
 class Patient(models.Model):
@@ -25,9 +25,9 @@ class Patient(models.Model):
     sex = models.CharField(max_length=1)
     phone = models.BigIntegerField()
     email = models.EmailField(blank=True)
+
     def __str__(self):
         return self.name
-
 
 
 class Appointment(models.Model):
@@ -38,6 +38,9 @@ class Appointment(models.Model):
     doc = models.ForeignKey(
         Doctor, on_delete=models.SET_NULL, null=True, related_name='appointments')
 
+    def __str__(self):
+        return "{0} - {1}".format(self.patient.name, str(self.time))
+
 
 class BillEntry(models.Model):
     category = models.CharField(max_length=32, unique=False)
@@ -45,9 +48,9 @@ class BillEntry(models.Model):
     cost = models.PositiveIntegerField(
         validators=[MaxValueValidator(500000)],
         default=1000)
+
     def __str__(self):
         return self.name
-
 
 
 class Bill(models.Model):
@@ -58,5 +61,6 @@ class Bill(models.Model):
         BillEntry, related_name='billings')
     completed = models.BooleanField(default=False)
     comment = models.TextField(blank=True)
+
     def __str__(self):
         return self.name

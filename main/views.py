@@ -151,12 +151,12 @@ def CartView(req, appointid):
 
 def AppointListView(req):
     today = datetime.date.today()
-    qset = Appointment.objects.all()
-    # qset = Appointment.objects.filter(
-    #     time__year=today.year,
-    #     time__month=today.month,
-    #     time__day=today.day,
-    # )
+    # qset = Appointment.objects.all()
+    qset = Appointment.objects.filter(
+        time__year=today.year,
+        time__month=today.month,
+        time__day=today.day,
+    )
     context = {
         'title': 'Appointment View',
         'queryset': qset,
@@ -177,9 +177,9 @@ def AppointListView(req):
         #          "status": 403})
 
 
-def GenerateBill(req):
+def GenerateBill(req, appointid):
     if req.method == 'POST':
-        clearcook = 0
+        # clearcook = 0
         try:
             data = json.loads(req.body.decode('utf8').replace("'", '"'))
             # data = req.POST.copy()
@@ -189,12 +189,12 @@ def GenerateBill(req):
                {"message": "Incorrect Request Body", "status": 403}
             )
         try:
-            patid = req.COOKIES['PatientID']
+            patid = appointid.patient.id
             print('Received PatientID {}'.format(str(patid)))
-            clearcook = 1
+            # clearcook = 1
         except Exception:
             return JsonResponse(
-               {"message": "Cookie 'PatientID' not found!", "status": 553}
+               {"message": "Appointment 'ID' not found!", "status": 404}
             )
         try:
             # Collect Comment
@@ -219,6 +219,7 @@ def GenerateBill(req):
 
         # Save Generated Bill Again
         customerbill.save()
+
         # mssg = "Successfully Generated Bill for {0}-{1}".format(
         #     patid,
         #     patient.name)
@@ -227,8 +228,8 @@ def GenerateBill(req):
         #      "billid": customerbill.id,
         #      "status": 1})
         res = redirect('/main/bill/{}'.format(customerbill.id))
-        if clearcook:
-            res.delete_cookie('PatientID')
+        # if clearcook:
+            # res.delete_cookie('PatientID')
         return res
     elif req.method == 'GET':
         print('Nothing here!')
@@ -420,7 +421,7 @@ def PatientSelectView(req):
         'title': 'Patient Selector',
         'queryset': Patient.objects.all(),
         'doctors': Doctor.objects.all(),
-        'today': datetime.date.today().strftime("%Y-%m-%d"),
+        'today': str(datetime.date.today()),
         'extras': 1,
     }
     if req.method == 'GET':
@@ -449,7 +450,7 @@ def PatientSelectView(req):
 
         # res = redirect(reverse(AppointView))
         res = redirect('/main/cart/{}'.format(newappoint.id))
-        res.set_cookie('PatientID', selected)
+        # res.set_cookie('PatientID', selected)
         return res
 
 
