@@ -90,8 +90,10 @@ article address { float: left; font-size: 125%; font-weight: bold; }
 
 /* table meta & balance */
 
-table.meta, table.balance { float: right; width: 40%; }
-table.meta:after, table.balance:after { clear: both; content: ""; display: table; }
+table.meta, table.balance, table.receipt { float: right; width: 40%; }
+table.meta:after, table.balance:after, table.receipt { clear: both; content: ""; display: table; }
+
+
 
 /* table meta */
 
@@ -114,6 +116,13 @@ table.inventory td:nth-child(5) { text-align: right; width: 12%; }
 table.balance th, table.balance td { width: 50%; }
 table.balance td { text-align: right; }
 
+
+
+/* table receipt */
+table.receipt { clear: both; width: 100%; }
+table.receipt th { font-weight: 400; text-align: center; }
+table.receipt th, table.receipt td { width:40%; }
+table.receipt td { text-align: left; }
 /* aside */
 
 aside h1 { border: none; border-width: 0 0 1px; margin: 0 0 1em; }

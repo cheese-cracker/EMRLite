@@ -21,7 +21,7 @@ class Patient(models.Model):
     name = models.CharField(max_length=64)
     sex = models.CharField(max_length=1)
     phone = models.BigIntegerField()
-    email = models.EmailField(unique=True, blank=True)
+    email = models.EmailField(blank=True)
 
 class BillEntry(models.Model):
     category = models.CharField(max_length=32, unique=False)

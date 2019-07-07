@@ -20,7 +20,7 @@
             {% if queryset %}
             {% for bill in queryset %}
                <tr>
-                    <td>{{ bill.id }}
+                    <td><a href="/main/bill/{{ bill.id }}">{{ bill.id }}</a>
                     <td>{{ bill.timestamp }}
                     <td>{{ bill.person.name }}
                     {% if bill.completed %}
