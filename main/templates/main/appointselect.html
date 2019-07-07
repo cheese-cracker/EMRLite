@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+{% extends "main/base.html" %}
+{% load static %}
+
+{% block head %}
+
+<link rel="stylesheet" type="text/css" href="{% static 'css/jquery.dataTables.min.css' %}">
+<link type="text/css" href="{% static 'css/dataTables.checkboxes.css' %}" rel="stylesheet" />
+
+{% endblock %}
+
+{% block content %}
+    <div class="col-12 tm-block-col">
+        <div class="tm-bg-primary-dark tm-block-tallest tm-block-scroll">
+            <h2 class="tm-block-title">Appointment Selector</h2>
+            <form id='formulator' method="post" action="">
+                {% csrf_token %}
+
+            <table id="items" class="display dataTable dt-checkboxes-select" cellspacing="0" width="100%">
+              <thead>
+                <tr>
+                  <th></th>
+                  <th>Name</th>
+                  <th>Time</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% if queryset %}
+                {% for appointment in queryset %}
+                <tr>
+                  <td>{{ appointment.id }}</td>
+                  <td>{{ appointment.patient.name }}</td>
+                  <td>{{ appointment.time }}</td>
+                </tr>
+                {% endfor %}
+                {% endif %}
+              </tbody>
+              <tfoot>
+                <tr>
+                  <th></th>
+                  <th>Name</th>
+                  <th>Time</th>
+                </tr>
+              </tfoot>
+            </table>
+        </div>
+    </div>
+    <div class="col-12">
+        <div class="tm-bg-primary-dark tm-mt-small row">
+            <button
+              type="submit"
+              class="btn btn-primary text-uppercase"
+            >
+             Select Appointment
+            </button>
+        </div>
+    </div>
+    </form>
+{% endblock %}
+
+{% block tail %}
+    <script type="text/javascript" charset="utf8" src="{% static 'js/dataTables.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/dataTables.checkboxes.min.js' %}"></script>
+
+<script>
+$(document).ready(function (){
+   var table = $('#items').DataTable({
+      'columnDefs': [
+         {
+            'targets': 0,
+            'checkboxes': {
+               'selectRow': true
+            }
+         }
+      ],
+      'select': {
+         'style': 'single'
+      },
+      'stateSave':true,
+      'order': [[1, 'asc']]
+   });
+
+
+    var rows_selected = table.column(0).checkboxes.selected();
+   // Handle form submission event
+   $('#formulator').on('submit', function(e){
+      var form = this;
+
+      var rows_selected = table.column(0).checkboxes.selected();
+
+      // Iterate over all selected checkboxes
+      $.each(rows_selected, function(index, rowId){
+         // Create a hidden element
+         $(form).append(
+             $('<input>')
+                .attr('type', 'hidden')
+                .attr('name', 'selected')
+                .val(rowId)
+         );
+      })
+
+    });
+
+   // Output form data to a console     
+      $('#example-console-rows').text(rows_selected.join(","));
+});
+</script>
+{% endblock %}
+
+  </body>
+</html>
