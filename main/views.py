@@ -248,6 +248,7 @@ def AddPatient(req):
                 sex = data.get('sex')
                 phonenumber = data.get('phonenumber')
                 email=data.get('email')
+                dob=data.get('dob')
                 # excelbackup(name,sex,phonenumber,email)
             except KeyError as missing_data:
                 return JsonResponse(
@@ -265,6 +266,8 @@ def AddPatient(req):
                 entry.sex = sex
                 entry.phone = phonenumber
                 entry.email=email
+                entry.dob=dob
+                print(dob)
             except Exception:
                 return JsonResponse(
                     {

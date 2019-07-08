@@ -66,6 +66,19 @@
                           />
                         </div>
 
+                        <div class="form-group mt-3">
+                                <label for="dob">DOB</label>
+                                <input
+                                  type="date"
+                                  id="dob"
+                                  name="dob"
+                                  class="form-control validate"
+                                  value="{{ today }}"
+                                  min="1950-01-01"
+                                  max="2050-12-31"
+                                  />
+                        </div>
+
 
 
                         <div class="form-group mt-4">
@@ -133,6 +146,7 @@
                               <th scope="col">SEX</th>
                               <th scope="col">PHONE</th>
                               <th scope="col">EMAIL</th>
+                              <th scope="col">DOB</th>
                           </tr>
                       </thead>
                       <tbody>
@@ -144,6 +158,7 @@
                               <td>{{ patient.sex }}
                               <td>{{ patient.phone }}
                               <td>{{ patient.email }}
+                              <td>{{ patient.dob }}
                          </tr>
                       {% endfor %}
                       {% endif %}
