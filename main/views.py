@@ -220,20 +220,12 @@ def GenerateBill(req, appointid):
         # Save Generated Bill Again
         customerbill.save()
 
-        # mssg = "Successfully Generated Bill for {0}-{1}".format(
-        #     patid,
-        #     patient.name)
-        # res = JsonResponse(
-        #     {"message": mssg,
-        #      "billid": customerbill.id,
-        #      "status": 1})
         res = redirect('/main/bill/{}'.format(customerbill.id))
         # if clearcook:
             # res.delete_cookie('PatientID')
         return res
     elif req.method == 'GET':
-        print('Nothing here!')
-        return redirect(reverse(AppointListView))
+        return redirect(reverse(BillList))
 
 
 @login_required(login_url=LOGIN_URL)
