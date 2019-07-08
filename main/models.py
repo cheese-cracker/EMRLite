@@ -63,4 +63,4 @@ class Bill(models.Model):
     comment = models.TextField(blank=True)
 
     def __str__(self):
-        return self.name
+        return self.person.name
