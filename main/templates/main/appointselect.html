@@ -12,56 +12,25 @@
 {% block content %}
     <div class="col-12 tm-block-col">
         <div class="tm-bg-primary-dark tm-block-tallest tm-block-scroll">
-            <h2 class="tm-block-title">Patient Selector</h2>
+            <h2 class="tm-block-title">Appointment Selector</h2>
             <form id='formulator' method="post" action="">
                 {% csrf_token %}
 
-              <div class="form-group">
-                <label for="Doctor">Doctor</label>
-                <select
-                    name="doctor"
-                    class="browser-default custom-select"
-                    id="doctor"
-                    required
-                >
-                {% for doctor in doctors %}
-                    <option value="{{ doctor.id }}">{{ doctor.name }}</option>
-                {% endfor %}
-                </select>
-               </div>
-
-            <div class='col-sm-6'>
-                <div class="form-group">
-                    <input type="date" id="start" name="date"
-                       value="{{ today }}"
-                       min="2019-01-01" max="2099-12-31">
-                    <input type="time" id="time" name="time"
-                        value="13:00"
-                       />
-                </div>
-            </div>
-   
             <table id="items" class="display dataTable dt-checkboxes-select" cellspacing="0" width="100%">
               <thead>
                 <tr>
                   <th></th>
-                  <th>ID No.</th>
                   <th>Name</th>
-                  <th>Sex</th>
-                  <th>Phone</th>
-                  <th>DOB</th>
+                  <th>Time</th>
                 </tr>
               </thead>
               <tbody>
                 {% if queryset %}
-                {% for patient in queryset %}
+                {% for appointment in queryset %}
                 <tr>
-                  <td>{{ patient.id }}</td>
-                  <td>{{ patient.id }}</td>
-                  <td>{{ patient.name }}</td>
-                  <td>{{ patient.sex }}</td>
-                  <td>{{ patient.phone }}</td>
-                  <td>{{ patient.dob}}</td>
+                  <td>{{ appointment.id }}</td>
+                  <td>{{ appointment.patient.name }}</td>
+                  <td>{{ appointment.time }}</td>
                 </tr>
                 {% endfor %}
                 {% endif %}
@@ -69,23 +38,20 @@
               <tfoot>
                 <tr>
                   <th></th>
-                  <th>ID No.</th>
                   <th>Name</th>
-                  <th>Sex</th>
-                  <th>Phone</th>
+                  <th>Time</th>
                 </tr>
               </tfoot>
             </table>
         </div>
     </div>
-    
     <div class="col-12">
         <div class="tm-bg-primary-dark tm-mt-small row">
             <button
               type="submit"
               class="btn btn-primary text-uppercase"
             >
-             Select Patient
+             Select Appointment
             </button>
         </div>
     </div>
@@ -135,7 +101,7 @@ $(document).ready(function (){
 
     });
 
-   // Output form data to a console
+   // Output form data to a console     
       $('#example-console-rows').text(rows_selected.join(","));
 });
 </script>

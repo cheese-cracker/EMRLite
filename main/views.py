@@ -9,29 +9,23 @@ from django.http import JsonResponse
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.decorators import login_required
 # from django.views.generic import ListView
-from .models import Patient, Doctor, BillEntry, Bill
-
-
-
+from .models import Patient, Doctor, BillEntry, Bill, Appointment
 from django.http import HttpResponse
-from django.views.generic import View
 import datetime
 from django.template.loader import get_template
-from Central.utils import render_to_pdf
-
-
-
 
 
 LOGIN_URL = '/main/login'
 
 
+@login_required(login_url=LOGIN_URL)
 def HomeView(req):
     qset=BillEntry.objects.all()
 #    print(qset)
     return render(req, 'main/index.html', {
                   'title': 'EMRLite System',
                   'item_list': qset})
+
 
 
 @login_required(login_url=LOGIN_URL)
@@ -103,7 +97,7 @@ def Login(req):
 
 def LogoutReq(req):
     logout(req)
-    return redirect(reverse(HomeView))
+    return redirect(reverse(Login))
 
 
 @login_required(login_url=LOGIN_URL)
@@ -137,29 +131,57 @@ def FinalBillView(req, billid):
     #    return httpresponse(pdf,content_type='pdf' )
 
 
-def CartView(req):
-    context = {
-        'title': 'Bill Addition',
-        'item_list': BillEntry.objects.all(),
-        'patient': 'None',
-        'extras': 1,
-    }
+def CartView(req, appointid):
     try:
-        # patid = req.POST['selected']
-        patid = req.COOKIES['PatientID']
-        patname = Patient.objects.get(id=patid).name
-        context['patient'] = patname
+        appoint = Appointment.objects.get(id=appointid)
+        context = {
+            'title': 'Bill Addition',
+            'item_list': BillEntry.objects.all(),
+            'patient': appoint.patient.name,
+            'extras': 1,
+        }
     except Exception:
-        print('No PatientID Cookie Found')
-        # return JsonResponse({
-        #     "message": "Cookie 'PatientID' not found.",
-        #     "status": 493})
+        context = {
+            'title': 'TEST Bill Addition',
+            'item_list': BillEntry.objects.all(),
+            'patient': 'APPOINTMENT NOT FOUND',
+            'extras': 1,
+        }
+        print('No Appointment ID found!')
     return render(req, 'main/cart.html', context)
 
 
-def GenerateBill(req):
+def AppointListView(req):
+    today = datetime.date.today()
+    # qset = Appointment.objects.all()
+    qset = Appointment.objects.filter(
+        time__year=today.year,
+        time__month=today.month,
+        time__day=today.day,
+    )
+    context = {
+        'title': 'Appointment View',
+        'queryset': qset,
+        'usr': req.user,
+        'extras': 1,
+    }
+    if req.method == 'GET':
+        return render(req, 'main/appointselect.html', context)
+    elif req.method == 'POST':
+        # try:
+        data = req.POST.copy()
+        print(data)
+        selected = int(data['selected'])
+        return redirect('/main/cart/{}'.format(selected))
+        # except Exception:
+        #     return JsonResponse(
+        #         {"message": "Incorrect Request Body or unable to received",
+        #          "status": 403})
+
+
+def GenerateBill(req, appointid):
     if req.method == 'POST':
-        clearcook = 0
+        # clearcook = 0
         try:
             data = json.loads(req.body.decode('utf8').replace("'", '"'))
             # data = req.POST.copy()
@@ -169,12 +191,12 @@ def GenerateBill(req):
                {"message": "Incorrect Request Body", "status": 403}
             )
         try:
-            patid = req.COOKIES['PatientID']
+            patid = appointid.patient.id
             print('Received PatientID {}'.format(str(patid)))
-            clearcook = 1
+            # clearcook = 1
         except Exception:
             return JsonResponse(
-               {"message": "Cookie 'PatientID' not found!", "status": 553}
+               {"message": "Appointment 'ID' not found!", "status": 404}
             )
         try:
             # Collect Comment
@@ -199,20 +221,13 @@ def GenerateBill(req):
 
         # Save Generated Bill Again
         customerbill.save()
-        # mssg = "Successfully Generated Bill for {0}-{1}".format(
-        #     patid,
-        #     patient.name)
-        # res = JsonResponse(
-        #     {"message": mssg,
-        #      "billid": customerbill.id,
-        #      "status": 1})
+
         res = redirect('/main/bill/{}'.format(customerbill.id))
-        if clearcook:
-            res.delete_cookie('PatientID')
+        # if clearcook:
+            # res.delete_cookie('PatientID')
         return res
     elif req.method == 'GET':
-        print('Nothing here!')
-        return redirect(reverse(CartView))
+        return redirect(reverse(BillList))
 
 
 @login_required(login_url=LOGIN_URL)
@@ -301,8 +316,6 @@ def AddPatient(req):
              'status': 403})
 
 
-
-
 def AddItem(req):
     if req.method == 'POST':
         try:
@@ -385,13 +398,6 @@ def AddItem(req):
              'status': 403})
 
 
-
-
-
-
-
-
-
 @login_required(login_url=LOGIN_URL)
 def BillList(req):
     qset = Bill.objects.order_by('-id')[:100]
@@ -404,11 +410,15 @@ def BillList(req):
     return render(req, 'main/billlist.html', context)
 
 
+@login_required(login_url=LOGIN_URL)
 def PatientSelectView(req):
     context = {
         'title': 'Patient Selector',
         'queryset': Patient.objects.all(),
+        'doctors': Doctor.objects.all(),
+        'today': str(datetime.date.today()),
         'extras': 1,
+        'usr':req.user
     }
     if req.method == 'GET':
         return render(req, 'main/patientselector.html', context)
@@ -418,12 +428,25 @@ def PatientSelectView(req):
             data = req.POST.copy()
             print(data)
             selected = int(data['selected'])
+            docSelected = int(data['doctor'])
+            datetimeSelected = str(data['date']) + " " + str(data['time'])
         except Exception:
-            return JsonResponse(
-                {"message": "Incorrect Request Body or missing",
-                 "status": 403})
-        res = redirect(reverse(CartView))
-        res.set_cookie('PatientID', selected)
+            return HttpResponse('<h2> Field is Missing. Make Sure you fill all fields</h2><h5>Incorrect Request Body')
+        try:
+            patObj = Patient.objects.get(id=selected)
+            docObj = Doctor.objects.get(id=docSelected)
+        except Exception:
+            return HttpResponse("<h1> ERROR: Patient or Doctor with id Not Found!</h1>")
+        newappoint = Appointment(
+                        patient=patObj,
+                        doc=docObj,
+                        time=datetimeSelected,
+                                )
+        newappoint.save()
+
+        res = redirect(reverse(AppointListView))
+        # res = redirect('/main/cart/{}'.format(newappoint.id))
+        # res.set_cookie('PatientID', selected)
         return res
 
 

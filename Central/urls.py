@@ -15,14 +15,16 @@ Including another URLconf
 """
 from django.conf.urls import url, include
 from django.contrib import admin
-from main.views import HomeView
-#from Formapp.views import GeneratePDF
+
+#from main.views import HomeView
+
+from main.views import Login
 
 
 urlpatterns = [
 
-    url(r'^$', HomeView, name='home'),
-#    url(r'^pdf/',GeneratePDF.as_view()),
+
+    url(r'^$', Login, name='login'),
     url(r'^admin/', admin.site.urls),
     url(r'^main/', include('main.urls')),
 ]

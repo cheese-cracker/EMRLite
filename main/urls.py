@@ -11,6 +11,7 @@ from .views import (
     FinalBillView,
     GenerateBill,
     AddPatient,
+    AppointListView
 )
 
 urlpatterns = [
@@ -20,11 +21,12 @@ urlpatterns = [
     url(r'^logout/?', LogoutReq, name='logout'),
     url(r'^add_item/?', AddItem, name='add_item'),
     url(r'^add_patient/?', AddPatient, name='add_patient'),
-    url(r'^cart/?', CartView, name='cartview'),
+    url(r'^cart/(?P<appointid>[0-9]+)/$', CartView, name='cartview'),
     url(r'^test/?', TestView, name='testing'),
     url(r'^bill/(?P<billid>[0-9]+)/$', FinalBillView, name='finalbill'),
     url(r'^billhistory/?', BillList, name='listofbills'),
+    url(r'^appointments/?', AppointListView, name='listofappointments'),
     url(r'^patientselector/?', PatientSelectView, name='patientselect'),
     # url(r'^billing/?', FinalBillView, name='finalbill'),
-    url(r'^generatebill/?', GenerateBill, name='generateBill'),
+    url(r'^generatebill/(?P<appointid>[0-9]+)/$', GenerateBill, name='maker'),
 ]
