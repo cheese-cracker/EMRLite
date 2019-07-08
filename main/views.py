@@ -10,26 +10,19 @@ from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.decorators import login_required
 # from django.views.generic import ListView
 from .models import Patient, Doctor, BillEntry, Bill, Appointment
-
-
-
 from django.http import HttpResponse
-from django.views.generic import View
 import datetime
 from django.template.loader import get_template
-from Central.utils import render_to_pdf
-
-
-
 
 
 LOGIN_URL = '/main/login'
+
 
 @login_required(login_url=LOGIN_URL)
 def HomeView(req):
     return render(req, 'main/index.html',
                   {'title': 'EMRLite System',
-                    'usr': req.user})
+                   'usr': req.user})
 
 
 @login_required(login_url=LOGIN_URL)
@@ -96,7 +89,7 @@ def Login(req):
 
 def LogoutReq(req):
     logout(req)
-    return redirect(reverse(HomeView))
+    return redirect(reverse(Login))
 
 
 @login_required(login_url=LOGIN_URL)
@@ -408,6 +401,7 @@ def BillList(req):
     }
     return render(req, 'main/billlist.html', context)
 
+
 @login_required(login_url=LOGIN_URL)
 def PatientSelectView(req):
     context = {
@@ -442,8 +436,8 @@ def PatientSelectView(req):
                                 )
         newappoint.save()
 
-        # res = redirect(reverse(AppointView))
-        res = redirect('/main/cart/{}'.format(newappoint.id))
+        res = redirect(reverse(AppointListView))
+        # res = redirect('/main/cart/{}'.format(newappoint.id))
         # res.set_cookie('PatientID', selected)
         return res
 
