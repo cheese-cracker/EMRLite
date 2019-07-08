@@ -16,15 +16,15 @@ Including another URLconf
 from django.conf.urls import url, include
 from django.contrib import admin
 
-#from main.views import HomeView
+from main.views import HomeView
 
-from main.views import Login
+#from main.views import Login
 
 
 urlpatterns = [
 
 
-    url(r'^$', Login, name='login'),
+    url(r'^$', HomeView, name='login'),
     url(r'^admin/', admin.site.urls),
     url(r'^main/', include('main.urls')),
 ]
