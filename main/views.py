@@ -27,8 +27,11 @@ LOGIN_URL = '/main/login'
 
 
 def HomeView(req):
-    return render(req, 'main/index.html',
-                  {'title': 'EMRLite System'})
+    qset=BillEntry.objects.all()
+#    print(qset)
+    return render(req, 'main/index.html', {
+                  'title': 'EMRLite System',
+                  'item_list': qset})
 
 
 @login_required(login_url=LOGIN_URL)
@@ -41,6 +44,11 @@ def PatientList(req):
         'power': 'Doctor',
     }
     return render(req, 'main/table.html', context)
+
+
+
+
+
 
 
 def Login(req):

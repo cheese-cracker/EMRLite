@@ -49,4 +49,4 @@ class Bill(models.Model):
     completed = models.BooleanField(default=False)
     comment = models.TextField(blank=True)
     def __str__(self):
-        return self.name
+        return self.person.name

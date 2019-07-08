@@ -153,6 +153,37 @@
             </div>
 
 
+            <div class="col-12 tm-block-col">
+                <div class="tm-bg-primary-dark tm-block tm-block-taller tm-block-scroll">
+                    <h2 class="tm-block-title">Entry List</h2>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th scope="col">ID</th>
+                                <th scope="col">Category</th>
+                                <th scope="col">Name</th>
+                                <th scope="col">Cost</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                          {% for entry in item_list %}
+                            <tr>
+                                <td>{{ entry.id }}
+                                <td>{{ entry.category }}
+                                <td>{{ entry.name }}
+                                <td>{{ entry.cost }}
+                            </tr>
+                          {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+
+
+
+
+
         </div>
     </div>
 {% endblock %}
