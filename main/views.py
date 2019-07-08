@@ -25,10 +25,11 @@ from Central.utils import render_to_pdf
 
 LOGIN_URL = '/main/login'
 
-
+@login_required(login_url=LOGIN_URL)
 def HomeView(req):
     return render(req, 'main/index.html',
-                  {'title': 'EMRLite System'})
+                  {'title': 'EMRLite System',
+                    'usr': req.user})
 
 
 @login_required(login_url=LOGIN_URL)
@@ -415,7 +416,7 @@ def BillList(req):
     }
     return render(req, 'main/billlist.html', context)
 
-
+@login_required(login_url=LOGIN_URL)
 def PatientSelectView(req):
     context = {
         'title': 'Patient Selector',
@@ -423,6 +424,7 @@ def PatientSelectView(req):
         'doctors': Doctor.objects.all(),
         'today': str(datetime.date.today()),
         'extras': 1,
+        'usr':req.user
     }
     if req.method == 'GET':
         return render(req, 'main/patientselector.html', context)
