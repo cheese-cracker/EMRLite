@@ -24,7 +24,8 @@ def HomeView(req):
 #    print(qset)
     return render(req, 'main/index.html', {
                   'title': 'EMRLite System',
-                  'item_list': qset})
+                  'item_list': qset,
+                  'usr':req.user})
 
 
 
