@@ -5,10 +5,8 @@ from __future__ import unicode_literals
 # import uuid
 import json
 from django.shortcuts import render, redirect, reverse
-from django.http import JsonResponse
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.decorators import login_required
-# from django.views.generic import ListView
 from .models import Patient, Doctor, BillEntry, Bill, Appointment
 from django.http import HttpResponse
 import datetime
@@ -20,12 +18,12 @@ LOGIN_URL = '/main/login'
 
 @login_required(login_url=LOGIN_URL)
 def HomeView(req):
-    qset=BillEntry.objects.all()
+    qset = BillEntry.objects.all()
 #    print(qset)
     return render(req, 'main/index.html', {
                   'title': 'EMRLite System',
-                  'item_list': qset})
-
+                  'item_list': qset,
+                  'usr':req.user})
 
 
 @login_required(login_url=LOGIN_URL)
@@ -40,57 +38,30 @@ def PatientList(req):
     return render(req, 'main/table.html', context)
 
 
-
-
-
-
-
 def Login(req):
     if req.method == 'POST':
-        # print(req.body.decode('utf-8').replace("''", '""'))
         try:
-            # Coz we use " for quotes
-            # data = json.loads(req.body)
             data = req.POST.copy()
             print(data)
         except:
-            return JsonResponse(
-                {"message": "Incorrect Request Body", "status": 403}
-            )
+            return HttpResponse('<h2> Incorrect Request Body</h2>')
         try:
-            # username = data['name']
-            # password = data['password']
             username = data.get('username')
             password = data.get('password')
         except KeyError as missing_data:
-            return JsonResponse(
-                {'message': 'Missing key - {0}'.format(missing_data),
-                 "status": 3}
-            )
+            return HttpResponse('<h2> Missing key - {0} </h2>'.format(missing_data))
         doc = authenticate(username=username, password=password)
         if doc is not None:
             login(req, doc)
             try:
                 doctor = Doctor.objects.get(user=doc)
-            except:
-                return JsonResponse(
-                    {'message': 'Profile for this user does not exist!',
-                     'status': 404}
-                )
+            except Exception:
+                return HttpResponse('<h2>Profile for this user does not exist!</h2>')
             unique_id = str(doctor.uuid)
             print(unique_id)
-            # return render(req, 'main/table.html', context)
             return redirect(reverse(PatientList))
-            # return JsonResponse(
-            #     {"message": "Logged in Successfully!",
-            #      "status": 1,
-            #      "user_id": unique_id}
-            # )
         else:
-            return JsonResponse(
-                {'message': 'Invalid Login Credentials',
-                 "status": 0}
-            )
+            return HttpResponse('<h2> Unable to Login</h2>')
     elif req.method == 'GET':
         return render(req, 'main/login.html', {'title': 'Doctor Login'})
 
@@ -127,8 +98,6 @@ def FinalBillView(req, billid):
         return res
     else:
         return HttpResponse('<h1>Request Method Not Supported</h1>', req)
-    #    pdf = render_to_pdf('main/bill.html', context)
-    #    return httpresponse(pdf,content_type='pdf' )
 
 
 def CartView(req, appointid):
@@ -153,7 +122,6 @@ def CartView(req, appointid):
 
 def AppointListView(req):
     today = datetime.date.today()
-    # qset = Appointment.objects.all()
     qset = Appointment.objects.filter(
         time__year=today.year,
         time__month=today.month,
@@ -168,45 +136,31 @@ def AppointListView(req):
     if req.method == 'GET':
         return render(req, 'main/appointselect.html', context)
     elif req.method == 'POST':
-        # try:
         data = req.POST.copy()
         print(data)
         selected = int(data['selected'])
         return redirect('/main/cart/{}'.format(selected))
-        # except Exception:
-        #     return JsonResponse(
-        #         {"message": "Incorrect Request Body or unable to received",
-        #          "status": 403})
 
 
 def GenerateBill(req, appointid):
     if req.method == 'POST':
-        # clearcook = 0
         try:
             data = json.loads(req.body.decode('utf8').replace("'", '"'))
-            # data = req.POST.copy()
             pass
         except Exception:
-            return JsonResponse(
-               {"message": "Incorrect Request Body", "status": 403}
-            )
+            return HttpResponse("<h2>Incorrect Request Body<h2>")
         try:
             patid = appointid.patient.id
             print('Received PatientID {}'.format(str(patid)))
-            # clearcook = 1
         except Exception:
-            return JsonResponse(
-               {"message": "Appointment 'ID' not found!", "status": 404}
-            )
+            return HttpResponse("<h2>Appointment 'ID' not found!<h2>")
         try:
             # Collect Comment
             cment = data['comment']
             # Collect IDs from Bill Items
             idlist = list(data['selected'])
         except KeyError as missing_data:
-            return JsonResponse(
-                {'message': 'Missing key - {0}'.format(missing_data),
-                 "status": 3})
+            return HttpResponse("<h2>Missing key - {0}'<h2>".format(missing_data))
 
         # Create Bill and modify and save (to get id)
         patient = Patient.objects.get(id=patid)
@@ -223,8 +177,6 @@ def GenerateBill(req, appointid):
         customerbill.save()
 
         res = redirect('/main/bill/{}'.format(customerbill.id))
-        # if clearcook:
-            # res.delete_cookie('PatientID')
         return res
     elif req.method == 'GET':
         return redirect(reverse(BillList))
@@ -237,9 +189,7 @@ def AddPatient(req):
             data = req.POST.copy()
             print(data)
         except Exception:
-            return JsonResponse(
-                {"message": "Incorrect Request Body", "status": 403}
-            )
+            return HttpResponse("<h2>Incorrect Request Body<h2>")
         reqtype = data.get('_method')
         print(reqtype)
         if reqtype == 'POST':
@@ -247,34 +197,23 @@ def AddPatient(req):
                 name = data.get('name')
                 sex = data.get('sex')
                 phonenumber = data.get('phonenumber')
-                email=data.get('email')
-                dob=data.get('dob')
-                # excelbackup(name,sex,phonenumber,email)
+                email = data.get('email')
+                dob = data.get('dob')
             except KeyError as missing_data:
-                return JsonResponse(
-                    {'message': 'Missing key - {0}'.format(missing_data),
-                     "status": 3}
-                )
+                return HttpResponse("<h2>Missing key - {0}'<h2>".format(missing_data))
             try:
                 entry = Patient()
             except Exception:
-                return JsonResponse(
-                    {'message': 'Error in BillEntry model creation', 'status': 500}
-                )
+                return HttpResponse("<h2>Error in BillEntry model creation<h2>")
             try:
                 entry.name = name
                 entry.sex = sex
                 entry.phone = phonenumber
-                entry.email=email
-                entry.dob=dob
+                entry.email = email
+                entry.dob = dob
                 print(dob)
             except Exception:
-                return JsonResponse(
-                    {
-                        'message': 'name is not unique or name, category or price cannot be set to BillEntry',
-                        'status': 3
-                    }
-                )
+                return HttpResponse("<h2>name is not unique or name, category or price cannot be set to BillEntry<h2>")
 
             entry.save()
             return redirect('/main/patientlist')
@@ -282,15 +221,11 @@ def AddPatient(req):
             try:
                 idno = data.get('idno')
             except KeyError as missing_data:
-                return JsonResponse(
-                    {'message': 'Missing key - {0}'.format(missing_data),
-                     "status": 3})
+                return HttpResponse("<h2>Missing key - {0}'<h2>".format(missing_data))
             try:
                 entry = Patient.objects.get(id=idno)
             except Exception:
-                return JsonResponse(
-                    {'message': 'Entry not found',
-                     "status": 404})
+                return HttpResponse('<h2> 404 Entry not found </h2>')
             entry.delete()
 
             return redirect('/main/patientlist')
@@ -299,24 +234,16 @@ def AddPatient(req):
                 idno = data.get('idno')
                 cost = data.get('cost')
             except KeyError as missing_data:
-                return JsonResponse(
-                    {'message': 'Missing key - {0}'.format(missing_data),
-                     "status": 3})
+                return HttpResponse("<h2>Missing key - {0}'<h2>".format(missing_data))
             try:
                 entry = BillEntry.objects.get(id=idno)
             except Exception:
-                return JsonResponse(
-                    {'message': 'Entry not found',
-                     "status": 404})
+                return HttpResponse('<h2> 404 Entry not found </h2>')
             entry.cost = cost
             entry.save()
-            return JsonResponse(
-                    {'message': 'Successfully changed cost of item',
-                     'status': 1})
+            return redirect(reverse("AddPatient"))
     else:
-        return JsonResponse(
-            {'message': 'Only POST, PUT and DELETE requests are supported',
-             'status': 403})
+        return HttpResponse('<h2> Only POST, PUT and DELETE requests are supported</h2>')
 
 
 def AddItem(req):
@@ -325,9 +252,7 @@ def AddItem(req):
             data = req.POST.copy()
             print(data)
         except Exception:
-            return JsonResponse(
-                {"message": "Incorrect Request Body", "status": 403}
-            )
+            return HttpResponse("<h2>Incorrect Request Body<h2>")
         reqtype = data.get('_method')
         print(reqtype)
         if reqtype == 'POST':
@@ -336,27 +261,17 @@ def AddItem(req):
                 category = data.get('category')
                 cost = data.get('cost')
             except KeyError as missing_data:
-                return JsonResponse(
-                    {'message': 'Missing key - {0}'.format(missing_data),
-                     "status": 3}
-                )
+                return HttpResponse("<h2>Missing key - {0}'<h2>".format(missing_data))
             try:
                 entry = BillEntry()
             except Exception:
-                return JsonResponse(
-                    {'message': 'Error in BillEntry model creation', 'status': 500}
-                )
+                return HttpResponse('<h2>Error in BillEntry model creation</h2>')
             try:
                 entry.name = name
                 entry.category = category
                 entry.cost = cost
             except Exception:
-                return JsonResponse(
-                    {
-                        'message': 'name is not unique or name, category or price cannot be set to BillEntry',
-                        'status': 3
-                    }
-                )
+                return HttpResponse('<h2>Name is not unique or name, category or price cannot be set to BillEntry</h2>')
 
             entry.save()
 
@@ -366,15 +281,11 @@ def AddItem(req):
                 name = data.get('name')
                 idno = data.get('idno')
             except KeyError as missing_data:
-                return JsonResponse(
-                    {'message': 'Missing key - {0}'.format(missing_data),
-                     "status": 3})
+                return HttpResponse('<h2>Missing key - {0}</h2>'.format(missing_data))
             try:
                 entry = BillEntry.objects.get(id=idno)
             except Exception:
-                return JsonResponse(
-                    {'message': 'Entry not found',
-                     "status": 404})
+                return HttpResponse('<h2> 404 Entry not found </h2>')
             entry.delete()
 
             return redirect('/')
@@ -383,22 +294,16 @@ def AddItem(req):
                 idno = data.get('idno')
                 cost = data.get('cost')
             except KeyError as missing_data:
-                return JsonResponse(
-                    {'message': 'Missing key - {0}'.format(missing_data),
-                     "status": 3})
+                return HttpResponse('Missing key - {0}'.format(missing_data))
             try:
                 entry = BillEntry.objects.get(id=idno)
-            except Exception:
-                return JsonResponse(
-                    {'message': 'Entry not found',
-                     "status": 404})
+            except KeyError as missing_data:
+                return HttpResponse('Missing key - {0}'.format(missing_data))
             entry.cost = cost
             entry.save()
             return redirect('/')
     else:
-        return JsonResponse(
-            {'message': 'Only POST, PUT and DELETE requests are supported',
-             'status': 403})
+        return HttpResponse('<h2> Only POST, PUT and DELETE requests are supported</h2>')
 
 
 @login_required(login_url=LOGIN_URL)
@@ -426,7 +331,6 @@ def PatientSelectView(req):
     if req.method == 'GET':
         return render(req, 'main/patientselector.html', context)
     elif req.method == 'POST':
-        # res = render(req, 'main/patientselector.html', context)
         try:
             data = req.POST.copy()
             print(data)
@@ -451,17 +355,3 @@ def PatientSelectView(req):
         # res = redirect('/main/cart/{}'.format(newappoint.id))
         # res.set_cookie('PatientID', selected)
         return res
-
-
-# Only For Testing!
-def TestView(req):
-    data = req.POST.copy()
-    print(data)
-    selected = data.get('id[]')
-    # data = json.loads(req.POST)
-    # selected = data['selected']
-    print(selected)
-    return JsonResponse(
-        {'requested': data,
-         'technique': req.method}
-    )
