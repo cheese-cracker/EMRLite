@@ -2,7 +2,7 @@
 from __future__ import unicode_literals
 
 from django.contrib import admin
-from .models import Doctor, Patient, Bill, BillEntry
+from .models import Doctor, Patient, Bill, BillEntry, Appointment
 from import_export import resources
 from import_export.admin import ImportExportModelAdmin
 
@@ -17,3 +17,4 @@ admin.site.register(Doctor)
 admin.site.register(Patient, PatientAdmin)
 admin.site.register(Bill)
 admin.site.register(BillEntry)
+admin.site.register(Appointment)

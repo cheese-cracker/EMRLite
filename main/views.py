@@ -107,6 +107,7 @@ def CartView(req, appointid):
             'title': 'Bill Addition',
             'item_list': BillEntry.objects.all(),
             'patient': appoint.patient.name,
+            'usr': req.user,
             'extras': 1,
         }
     except Exception:
@@ -114,6 +115,7 @@ def CartView(req, appointid):
             'title': 'TEST Bill Addition',
             'item_list': BillEntry.objects.all(),
             'patient': 'APPOINTMENT NOT FOUND',
+            'usr': req.user,
             'extras': 1,
         }
         print('No Appointment ID found!')
@@ -353,5 +355,4 @@ def PatientSelectView(req):
 
         res = redirect(reverse(AppointListView))
         # res = redirect('/main/cart/{}'.format(newappoint.id))
-        # res.set_cookie('PatientID', selected)
         return res
