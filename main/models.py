@@ -38,8 +38,8 @@ class Appointment(models.Model):
     doc = models.ForeignKey(
         Doctor, on_delete=models.SET_NULL, null=True, related_name='appointments')
 
-    def __str__(self):
-         return "{0} - {1}".format(self.patient.name, str(self.time))
+    # def __str__(self):
+    #      return "{0} - {1}".format(self.patient.name, str(self.time))
 
 
 class BillEntry(models.Model):

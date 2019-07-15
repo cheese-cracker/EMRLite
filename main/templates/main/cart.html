@@ -22,7 +22,7 @@
               <th>Name</th>
               <th>Category</th>
               <th>Cost</th>
-           
+
             </tr>
           </thead>
           <tbody>
@@ -108,7 +108,7 @@ requestator = function(event){
 
     // /main/cart/1 = "", "main", "cart", "1"
     var appointid = String(window.location.pathname).split("/")[3];
-    fetch(`/main/generatebill/${appointid}`, {
+    fetch(`/main/generatebill/${appointid}/`, {
         method: "POST",
         redirect: "follow",
         headers: {

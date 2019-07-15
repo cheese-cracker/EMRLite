@@ -124,11 +124,37 @@ def CartView(req, appointid):
 
 def AppointListView(req):
     today = datetime.date.today()
+    doc = Doctor.objects.filter(user=req.user)[0]
+    # qset = Appointment.objects.filter(
+    qset = doc.appointments.filter(
+        time__year=today.year,
+        time__month=today.month,
+        time__day=today.day,
+    )
+
+    context = {
+        'title': 'Appointment View',
+        'queryset': qset,
+        'usr': req.user,
+        'extras': 1,
+    }
+    if req.method == 'GET':
+        return render(req, 'main/appointselect.html', context)
+    elif req.method == 'POST':
+        data = req.POST.copy()
+        print(data)
+        selected = int(data['selected'])
+        return redirect('/main/cart/{}'.format(selected))
+
+
+def AppointForSantosh(req):
+    today = datetime.date.today()
     qset = Appointment.objects.filter(
         time__year=today.year,
         time__month=today.month,
         time__day=today.day,
     )
+
     context = {
         'title': 'Appointment View',
         'queryset': qset,
@@ -145,14 +171,15 @@ def AppointListView(req):
 
 
 def GenerateBill(req, appointid):
+    print(req.method)
     if req.method == 'POST':
         try:
             data = json.loads(req.body.decode('utf8').replace("'", '"'))
-            pass
         except Exception:
             return HttpResponse("<h2>Incorrect Request Body<h2>")
         try:
-            patid = appointid.patient.id
+            appt = Appointment.objects.get(id=appointid)
+            patid = appt.patient.id
             print('Received PatientID {}'.format(str(patid)))
         except Exception:
             return HttpResponse("<h2>Appointment 'ID' not found!<h2>")
@@ -233,17 +260,32 @@ def AddPatient(req):
             return redirect('/main/patientlist')
         if reqtype == 'PUT':
             try:
+                datas = []
                 idno = data.get('idno')
-                cost = data.get('cost')
+                datas.append(data.get('name'))
+                datas.append(data.get('phonenumber'))
+                datas.append(data.get('email'))
+                datas.append(data.get('dob'))
+
             except KeyError as missing_data:
                 return HttpResponse("<h2>Missing key - {0}'<h2>".format(missing_data))
             try:
-                entry = BillEntry.objects.get(id=idno)
+                entry = Patient.objects.get(id=idno)
+                for das in range(len(datas)):
+                    datafeel = datas[das]
+                    if datafeel != "":
+                        if not das :
+                            entry.name = datafeel
+                        elif das == 1 :
+                            entry.phone = datafeel
+                        elif das == 2:
+                            entry.email = datafeel
+                        else:
+                            entry.dob = datafeel
+                entry.save()
             except Exception:
-                return HttpResponse('<h2> 404 Entry not found </h2>')
-            entry.cost = cost
-            entry.save()
-            return redirect(reverse("AddPatient"))
+                return HttpResponse('<h2> 404 Entry not found or unable to saves</h2>')
+            return redirect('/main/patientlist')
     else:
         return HttpResponse('<h2> Only POST, PUT and DELETE requests are supported</h2>')
 
@@ -310,7 +352,7 @@ def AddItem(req):
 
 @login_required(login_url=LOGIN_URL)
 def BillList(req):
-    qset = Bill.objects.order_by('-id')[:100]
+    qset = Bill.objects.order_by('-id')
     context = {
         'title': 'Bill History',
         'queryset': qset,
