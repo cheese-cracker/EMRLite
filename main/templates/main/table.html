@@ -73,7 +73,7 @@
                                   id="dob"
                                   name="dob"
                                   class="form-control validate"
-                                  value="{{ today }}"
+                                  value="1950-01-01"
                                   min="1950-01-01"
                                   max="2050-12-31"
                                   />
@@ -133,6 +133,103 @@
               </div>
 
           </div>
+
+
+
+
+          <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6 tm-block-col">
+
+              <div class="tm-bg-primary-dark tm-block-tallest">
+
+                  <h2 class="tm-block-title"> Edit Patient</h2>
+                  <div class="row mt-2">
+                    <div class="col-12">
+                      <form action="/main/add_patient" method="post">
+                          {% csrf_token %}
+                        <input type="hidden" name="_method" value="PUT">
+                        <div class="form-group">
+                          <label for="idno">ID No.</label>
+                          <input
+                            name="idno"
+                            type="text"
+                            class="form-control validate"
+                            id="idno"
+                            value=""
+                            required
+                          />
+                        </div>
+
+                        <div class="form-group">
+                          <label for="name">Name</label>
+                          <input
+                            name="name"
+                            type="text"
+                            class="form-control validate"
+                            id="name"
+                            value=""
+
+                          />
+                        </div>
+
+
+
+                        <div class="form-group mt-3">
+                          <label for="cost">Phone Number</label>
+                          <input
+                            name="phonenumber"
+                            type="text"
+                            class="form-control validate"
+                            id="phonenumber"
+                            value=""
+                            
+                          />
+                        </div>
+
+                        <div class="form-group mt-3">
+                          <label for="email">Email ID</label>
+                          <input
+                            name="email"
+                            type="text"
+                            value=""
+                            class="form-control validate"
+                            id="email"
+                          />
+                        </div>
+
+                        <div class="form-group mt-3">
+                                <label for="dob">DOB</label>
+                                <input
+                                  type="date"
+                                  id="dob"
+                                  name="dob"
+                                  class="form-control validate"
+                                  value=""
+                                  min="1950-01-01"
+                                  max="2050-12-31"
+                                  />
+                        </div>
+
+
+
+                        <div class="form-group mt-4">
+                          <button
+                            type="submit"
+                            class="btn btn-primary btn-block text-uppercase"
+                          >
+                            Edit Entry
+                          </button>
+                        </div>
+                      </form>
+                    </div>
+                  </div>
+              </div>
+
+          </div>
+
+
+
+
+
 
 
           <div class="col-12 tm-block-col">

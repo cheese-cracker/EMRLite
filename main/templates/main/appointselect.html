@@ -12,6 +12,7 @@
 {% block content %}
     <div class="col-12 tm-block-col">
         <div class="tm-bg-primary-dark tm-block-tallest tm-block-scroll">
+          <h2 class="tm-block-title"><a href="/main/appointforall">Show all today's appointments</a></h2>
             <h2 class="tm-block-title">Appointment Selector</h2>
             <form id='formulator' method="post" action="">
                 {% csrf_token %}
@@ -101,7 +102,7 @@ $(document).ready(function (){
 
     });
 
-   // Output form data to a console     
+   // Output form data to a console
       $('#example-console-rows').text(rows_selected.join(","));
 });
 </script>

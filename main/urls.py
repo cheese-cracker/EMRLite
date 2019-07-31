@@ -10,7 +10,8 @@ from .views import (
     FinalBillView,
     GenerateBill,
     AddPatient,
-    AppointListView
+    AppointListView,
+    AppointForSantosh
 )
 
 urlpatterns = [
@@ -24,6 +25,7 @@ urlpatterns = [
     url(r'^bill/(?P<billid>[0-9]+)/$', FinalBillView, name='finalbill'),
     url(r'^billhistory/?', BillList, name='listofbills'),
     url(r'^appointments/?', AppointListView, name='listofappointments'),
+    url(r'^appointforall/?', AppointForSantosh, name='listofallapoint'),
     url(r'^patientselector/?', PatientSelectView, name='patientselect'),
     # url(r'^billing/?', FinalBillView, name='finalbill'),
     url(r'^generatebill/(?P<appointid>[0-9]+)/$', GenerateBill, name='maker'),

@@ -32,14 +32,14 @@ class Patient(models.Model):
 
 class Appointment(models.Model):
     patient = models.ForeignKey(
-        Patient, on_delete=models.SET_NULL, null=True, related_name='appointments')
+        Patient, on_delete=models.CASCADE, null=True, related_name='appointments')
     time = models.DateTimeField(null=True, blank=True)
     last_modified = models.DateTimeField(auto_now=True)
     doc = models.ForeignKey(
         Doctor, on_delete=models.SET_NULL, null=True, related_name='appointments')
 
-    def __str__(self):
-        return "{0} - {1}".format(self.patient.name, str(self.time))
+    # def __str__(self):
+    #      return "{0} - {1}".format(self.patient.name, str(self.time))
 
 
 class BillEntry(models.Model):
