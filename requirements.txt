@@ -11,7 +11,7 @@ openpyxl==2.6.2
 Pillow>=6.2.2
 PyPDF2==1.26.0
 pytz==2019.1
-PyYAML==5.1.1
+PyYAML==5.4
 reportlab==3.5.23
 six==1.12.0
 sqlparse==0.3.0
