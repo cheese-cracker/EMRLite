@@ -10,11 +10,14 @@ Any Linux machine with python installed should be able to run this.
 
 This project is built on python3.
 
-1. Install the requirements ``pip install -r requirements.txt``
-2. Migrate the database with ``python manage.py migrate``
-3. Start the server with ``python manage.py runserver`` and visit the address to view it
+1. Install the requirements ``pip install -r requirements.txt`` (Use the backup in case of any
+   import failures)
+2. Set the keyconfig file with `mv Central/sample_keyconfig.py Central/keyconfig.py` and modify the
+   values for your project
+3. Migrate the database with ``python manage.py migrate``
+4. Start the server with ``python manage.py runserver`` and visit the address to view it
 
-Note: You may need to make a keyconfig file with the module-level variables and API keys for the settings.
+Note: Remember to change the keyconfig file with the module-level variables and API keys for the settings.
 
 ## Features
 
