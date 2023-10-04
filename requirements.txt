@@ -8,7 +8,7 @@ html5lib==1.1
 jdcal==1.4.1
 odfpy==1.4.1
 openpyxl==3.1.2
-Pillow==9.5.0
+Pillow==10.0.1
 PyPDF2==3.0.1
 pytz==2023.3
 PyYAML==6.0
